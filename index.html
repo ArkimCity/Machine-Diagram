@@ -11,7 +11,7 @@
         <script src="lib\OrbitControls.js"></script>
         <script type="module" src="three.js-master\src\loaders\ObjectLoader.js"></script>
         <script type="module" src="lib\OBJLoader.js"></script>
-
+        <script type="text/javascript" src="https://unpkg.com/threex-domevents@1.0.0/threex.domevents.js"></script>
     </head>
     <style>
         #info {
@@ -92,7 +92,7 @@
             let cubes = {};
 
             //큐브들 생성
-            totalNumber = 1;
+            totalNumber = 10;
             let i = totalNumber - 1;
             
 
@@ -105,7 +105,7 @@
 
             //큐브들 포지셔닝
             let cubesKeys = Object.keys(cubes);
-            for(var j=0; j<cubesKeys.length; j++){
+            for(let j=0; j<cubesKeys.length; j++){
                 cubes["cube" + j].position.x = (Math.random()-0.5)*30;
                 cubes["cube" + j].position.y = (Math.random()-0.5)*30;
                 cubes["cube" + j].position.z = (Math.random()-0.5)*30;
@@ -127,25 +127,6 @@
             let line = new THREE.Line( geometry2, material2 );
 
             scene.add( line );
-
-
-            function cubeAdd() {
-                i++;
-                let cube = new THREE.Mesh( geometry, material );
-                cubes["cube" + i] = cube;
-
-                cubes["cube" + i].position.x = (Math.random()-0.5)*30;
-                cubes["cube" + i].position.y = (Math.random()-0.5)*30;
-                cubes["cube" + i].position.z = (Math.random()-0.5)*30;
-
-                scene.add( cubes["cube" + i] );
-
-                let tempcube = cubes["cube" + i];
-                points.push(new THREE.Vector3( tempcube.position.x, tempcube.position.y, tempcube.position.z ));
-                geometry2 = new THREE.BufferGeometry().setFromPoints( points );
-                line = new THREE.Line( geometry2, material2 );
-                scene.add( line );
-            }
 
             //원 이동
             const sphereGeometry = new THREE.SphereGeometry( 0.5, 32, 32 );

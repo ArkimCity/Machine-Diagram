@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset=UTF-8 />
+	<link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+
+<body>
+	<script src="js/three.min.js"></script>
+	<script src="js/OrbitControls.js"></script>
+	<script src="js/GLTFLoader.js"></script>
+	<script>
+		let scene, camera, renderer;
+
+		function init() {
+			scene = new THREE.Scene();
+			camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 45, 30000);
+			camera.position.set(-900, -200, -900);
+
+			renderer = new THREE.WebGLRenderer({ antialias: true });
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+
+			controls = new THREE.OrbitControls( camera, renderer.domElement)
+			//도형의 가로세로높이
+            // var geometry = new THREE.BoxGeometry(100, 100, 100);
+			// var cubeMaterials =
+            // [
+            //     new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load('img/1.png'), side: THREE.DoubleSide}),// 오른쪽
+            //     new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load('img/2.jpg'), side: THREE.DoubleSide}),// 왼쪽
+            //     new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load('img/3.jpg'), side: THREE.DoubleSide}),// 위
+            //     new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load('img/4.jpg'), side: THREE.DoubleSide}),// 아래
+            //     new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load('img/5.png'), side: THREE.DoubleSide}),// 앞
+            //     new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load('img/6.png'), side: THREE.DoubleSide})//뒤
+            // ]
+
+            // // 재질의 색상
+            // var material = new THREE.MeshFaceMaterial( cubeMaterials );
+            // // 재질의 색상
+            
+            // // mesh(피사체)는 geometry + material로 구성된다
+            // var cube = new THREE.Mesh(geometry, material);
+
+            // //scene에 mesh를 추가
+			// scene.add(cube);
+			{
+    const color = 0xFFFFFF;
+    const intensity = 1;
+    const light = new THREE.DirectionalLight(color, intensity);
+    light.position.set(-1, 2, 4);
+    scene.add(light);
+  }
+
+  const boxWidth = 100;
+  const boxHeight = 100;
+  const boxDepth = 100;
+  const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+
+  function makeInstance(geometry, color, x) {
+    const material = new THREE.MeshPhongMaterial({color});
+
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    cube.position.x = x;
+
+    return cube;
+  }
+
+  const cubes = [
+    makeInstance(geometry, 0x44aa88,  600),
+    makeInstance(geometry, 0x8844aa, -2000),
+    makeInstance(geometry, 0xaa8844,  2000),
+  ];
+  
+const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+
+const points = [];
+points.push( new THREE.Vector3( - 2000, 0, 0 ) );
+points.push( new THREE.Vector3( 0, 0, 0 ) );
+points.push( new THREE.Vector3( 2000, 0, 0 ) );
+
+const linegeometry = new THREE.BufferGeometry().setFromPoints( points );
+
+const line = new THREE.Line( linegeometry, material );
+scene.add( line );
+ //  로더
+ 			var loader = new THREE.GLTFLoader();
+            loader.load('models/pony_cartoon/scene.gltf',function(gltf){
+				let house = gltf.scene.children[0];
+				house.scale.set(300,300,300)
+				house.position.y = -5000;
+				house.position.z = 1000;
+                scene.add(gltf.scene);
+                renderer.render(scene,camera);
+			});
+			
+			var loader2 = new THREE.GLTFLoader();
+            loader.load('models/cartoon_house/scene.gltf',function(gltf){
+				let house = gltf.scene.children[0];
+				house.scale.set(300,300,300)
+				house.position.y = -4000;
+                scene.add(gltf.scene);
+                renderer.render(scene,camera);
+            });
+            camera.position.z = 2;
+			let materialArray = [];
+			let texture_ft = new THREE.TextureLoader().load('img/barren_ft.jpg');
+			let texture_bk = new THREE.TextureLoader().load('img/barren_bk.jpg');
+			let texture_up = new THREE.TextureLoader().load('img/barren_up.jpg');
+			let texture_dn = new THREE.TextureLoader().load('img/barren_dn.jpg');
+			let texture_rt = new THREE.TextureLoader().load('img/barren_rt.jpg');
+			let texture_lf = new THREE.TextureLoader().load('img/barren_lf.jpg');
+
+			materialArray.push(new THREE.MeshBasicMaterial({ map: texture_ft }));
+			materialArray.push(new THREE.MeshBasicMaterial({ map: texture_bk }));
+			materialArray.push(new THREE.MeshBasicMaterial({ map: texture_up }));
+			materialArray.push(new THREE.MeshBasicMaterial({ map: texture_dn }));
+			materialArray.push(new THREE.MeshBasicMaterial({ map: texture_rt }));
+			materialArray.push(new THREE.MeshBasicMaterial({ map: texture_lf }));
+
+			for (let i = 0; i < 6; i++)
+				materialArray[i].side = THREE.BackSide;
+			let skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000);
+			let skybox = new THREE.Mesh(skyboxGeo, materialArray);
+			scene.add(skybox);
+			animate();
+		}
+		function animate() {
+			
+			renderer.render(scene, camera);
+			requestAnimationFrame(animate);
+		}
+		init();
+	</script>
+</body>
+
+</html>

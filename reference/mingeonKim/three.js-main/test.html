@@ -1,0 +1,164 @@
+<html>
+
+<head>
+    <title>Three.js Project</title>
+
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <script src="js/three.js"></script>
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/GLTFLoader.js"></script>
+    <script src="js/threex.domevents.js"></script>
+
+
+    <div id="app">
+        <!-- <button onclick="Insert()">value</button> -->
+        x : <input type="text" name="x" v-model="x"> <br>
+        y : <input type="text" name="y" v-model="y"> <br>
+        z : <input type="text" name="z" v-model="z"> <br>
+        <button onclick="Insert()">add</button>
+    </div>
+    <div id="app2"></div>
+    <script>
+        let vm = new Vue({
+            el: "#app",
+            data: {
+                x: 0,
+                y: 0,
+                z: 0,
+                done: 0
+            }
+        })
+
+        let vm2 = new Vue({
+            el: "#app2",
+            data: {
+                first: { x: 0, y: 0, z: 0 },
+                second: { x: 0, y: 0, z: 0 }
+            }
+        })
+        let num = [];
+        let tn = 0;
+        function Insert(x, y, z) {
+            x = vm.x
+            y = vm.y
+            z = vm.z
+            const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+            cubes.push(makeInstance(geometry, 0xFFFFFF, x, y, z))
+            num.push(0)
+            addevent(tn)
+            tn++;
+        }
+
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 1, 5000);
+        camera.position.z = 5;
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        window.addEventListener('resize', function () {
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        })
+
+        controls = new THREE.OrbitControls(camera, renderer.domElement)
+
+        const boxWidth = 1;
+        const boxHeight = 1;
+        const boxDepth = 1;
+        const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+
+        function makeInstance(geometry, color, x, y, z) {
+            const material = new THREE.MeshBasicMaterial({ color, wireframe: true });
+
+            const cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+
+            cube.position.x = x;
+            cube.position.y = y;
+            cube.position.z = z;
+
+            return cube;
+        }
+
+        const cubes = [
+
+        ];
+        let target = [0, 0];
+        const domEvents = new THREEx.DomEvents(camera, renderer.domElement);
+        let time = 2;
+        function addevent(i) {
+            domEvents.addEventListener(cubes[i], 'click', event => {
+                if (time == 2) {
+                    vm2.first.x = cubes[i].position.x;
+                    vm2.first.y = cubes[i].position.y;
+                    vm2.first.z = cubes[i].position.z;
+                    time--;
+                } else if (time == 1) {
+                    vm2.second.x = cubes[i].position.x;
+                    vm2.second.y = cubes[i].position.y;
+                    vm2.second.z = cubes[i].position.z;
+                    linemaker();
+                    time = 2;
+                }
+            })
+        }
+        function linemaker() {
+            const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+
+            const points = [];
+            points.push(new THREE.Vector3(vm2.first.x, vm2.first.y, vm2.first.z));
+            points.push(new THREE.Vector3(vm2.second.x, vm2.second.y, vm2.second.z));
+
+            const linegeometry = new THREE.BufferGeometry().setFromPoints(points);
+
+            const line = new THREE.Line(linegeometry, material);
+            scene.add(line);
+        }
+
+
+        //빛
+        var ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.3);
+        scene.add(ambientLight);
+        var update = function () {
+            if (num[target[0]] == 1) {
+                target[1].rotation.x += 0.10;
+            }
+        };
+
+        var render = function () {
+
+            renderer.render(scene, camera);
+        };
+
+        var GameLoop = function () {
+            requestAnimationFrame(GameLoop);
+
+            update();
+            render();
+
+        };
+
+        GameLoop();
+
+    </script>
+</body>
+
+</html>

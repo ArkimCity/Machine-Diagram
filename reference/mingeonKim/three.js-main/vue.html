@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id ="app"></div>
+    <script src="js/three.js"></script>
+    <script>
+        let vm = new Vue({
+            el :"#app",
+            mounted () {
+    this.initThree();
+  },
+  methods: {
+    initThree() {
+      this.scene = new THREE.Scene();
+      this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+      this.renderer = new THREE.WebGLRenderer( { canvas: document.getElementById( "background" ), alpha: true, antialias: true } );
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+      this.renderer.setSize( window.innerWidth, window.innerHeight );
+      let geometry = new THREE.BoxGeometry( 1, 1, 1 );
+      let material = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
+      this.cube = new THREE.Mesh( geometry, material );
+      this.scene.add( this.cube );
+      this.camera.position.z = 5;
+      this.animate()
+    },
+    animate() {
+      this.cube.rotation.x += 0.01;
+      this.renderer.render( this.scene, this.camera );
+      requestAnimationFrame( this.animate );
+    }
+  }
+        })
+    </script>
+</body>
+</html>
