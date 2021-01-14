@@ -7,8 +7,8 @@
 			body { margin: 0; }
 			canvas { display: block; }
 		</style>
-        <script src="three\build\three.js"></script>
-        <script src="lib\OrbitControls.js"></script>
+        <script src="three.js-master\build\three.js"></script>
+		<script src="lib\OrbitControls.js"></script>
     </head>
     <style>
         #info {
@@ -39,12 +39,12 @@
             controls.enabled = true;
 
             //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
-            camera.position.set( 0, 10, 50 );
+            camera.position.set( 0, 10, 10 );
             controls.update();
 
             //큐브 추가
             const geometry = new THREE.BoxGeometry();
-            const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
+            const material = new THREE.MeshLambertMaterial( { color: 0x00ff00, wireframe: false } );
 
             let cubes = {};
 
@@ -81,8 +81,15 @@
 
             scene.add( line );
 
+            //라이트 설정
+            let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+            scene.add(ambientLight);
+
+            let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
+            scene.add(pointLight1);
+
             //실제 렌더 준비 및 시작
-            camera.position.set( 0, 0, 30 );
+            camera.position.set( 0, 0, 15 );
 			camera.lookAt( 0, 0, 0 );
 
             function animate() {
@@ -93,9 +100,7 @@
                     cubes[cubekey].rotation.y += 0.1 * Math.random();
                     cubes[cubekey].rotation.z += 0.1 * Math.random();
                 }
-
                 controls.update();
-
                 renderer.render( scene, camera );
             }
             animate();
