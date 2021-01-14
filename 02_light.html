@@ -8,7 +8,10 @@
 			canvas { display: block; }
 		</style>
         <script src="three.js-master\build\three.js"></script>
-		<script src="lib\OrbitControls.js"></script>
+        <script src="lib\OrbitControls.js"></script>
+        <script type="module" src="three.js-master\src\loaders\ObjectLoader.js"></script>
+        <script type="module" src="lib\OBJLoader.js"></script>
+
     </head>
     <style>
         #info {
@@ -41,6 +44,33 @@
             //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
             camera.position.set( 0, 10, 10 );
             controls.update();
+
+            //sky box test
+            var geometry = new THREE.CubeGeometry(10000, 10000, 100000);
+            
+
+            //로더 테스트
+            let loader = new THREE.ObjectLoader();
+
+            loader.load(
+                // resource URL
+                "models/json/example1.json",
+                // onLoad callback
+                // Here the loaded data is assumed to be an object
+                function ( obj ) {
+                    // Add the loaded object to the scene
+                    scene.add( obj );
+                },
+
+                // onProgress callback
+                function ( xhr ) {
+                    console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+                },
+                // onError callback
+                function ( err ) {
+                    console.error( 'An error happened' );
+                }
+            );
 
             //큐브 추가
             const geometry = new THREE.BoxGeometry();

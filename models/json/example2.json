@@ -1,0 +1,144 @@
+{
+	"metadata": {
+		"version": 4.5,
+		"type": "Object",
+		"generator": "Object3D.toJSON"
+	},
+	"geometries": [
+		{
+			"uuid": "0A8F2988-626F-411C-BD6A-AC656C4E6878",
+			"type": "Geometry",
+			"data": {
+				"vertices": [ 1, 1, 0, 1, -1, 0, -1, -1, 0, -1, 1, 0 ],
+				"normals":  [ 0,0,1, 0,0,1, 0,0,1, 0,0,1 ],
+				"uvs": [ [ 1, 1, 1, 0, 0, 0, 0, 1 ], [ 1, 1, 1, 0, 0, 0, 0, 1 ] ],
+				"faces": [ 
+					8, 
+					2,1,0, 2,1,0, 2,1,0,
+					8,
+					3,2,0, 3,2,0, 3,2,0 
+				]
+			}
+		}],
+	"materials": [
+		{
+			"uuid": "1004175C-0998-4243-900E-1183CE95A692",
+			"type": "MeshStandardMaterial",
+			"color": 16777215,
+			"roughness": 0.5,
+			"metalness": 0.01,
+			"emissive": 0,
+			"map": "2B905060-08BC-4F9A-B459-B19426D879A8",
+			"normalMap": "DBCBCBC9-9C93-4CB0-96F0-BE95B3EAE706",
+			"normalScale": [1,1],
+			"roughnessMap": "2CC1EE93-3FA2-4458-A022-85210D6A415A",
+			"aoMap": "2CC1EE93-3FA2-4458-A022-85210D6A415A",
+			"aoMapIntensity": 0.5,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"skinning": false,
+			"morphTargets": false,
+			"dithering": false
+		}],
+	"textures": [
+		{
+			"uuid": "2B905060-08BC-4F9A-B459-B19426D879A8",
+			"name": "",
+			"mapping": 300,
+			"repeat": [1,1],
+			"offset": [0,0],
+			"wrap": [1001,1001],
+			"minFilter": 1008,
+			"magFilter": 1006,
+			"anisotropy": 1,
+			"flipY": true,
+			"image": "66BE77DC-B7CB-4C84-B685-DDCC506C4015"
+		},
+		{
+			"uuid": "DBCBCBC9-9C93-4CB0-96F0-BE95B3EAE706",
+			"name": "",
+			"mapping": 300,
+			"repeat": [1,1],
+			"offset": [0,0],
+			"wrap": [1001,1001],
+			"minFilter": 1008,
+			"magFilter": 1006,
+			"anisotropy": 1,
+			"flipY": true,
+			"image": "CEB6F8FF-29C2-44D4-8C25-6998FF62CDE5"
+		},
+		{
+			"uuid": "2CC1EE93-3FA2-4458-A022-85210D6A415A",
+			"name": "",
+			"mapping": 300,
+			"repeat": [1,1],
+			"offset": [0,0],
+			"wrap": [1001,1001],
+			"minFilter": 1008,
+			"magFilter": 1006,
+			"anisotropy": 1,
+			"flipY": true,
+			"image": "5D6FFCBC-2194-4A81-AC85-59D92F101A4C"
+		}],
+	"images": [
+		{
+			"uuid": "66BE77DC-B7CB-4C84-B685-DDCC506C4015",
+			"url": "Floor_BaseColor.jpg"
+		},
+		{
+			"uuid": "CEB6F8FF-29C2-44D4-8C25-6998FF62CDE5",
+			"url": "Floor_Normal.jpg"
+		},
+		{
+			"uuid": "5D6FFCBC-2194-4A81-AC85-59D92F101A4C",
+			"url": "Floor_AO_Roughness.jpg"
+		}],
+	"object": {
+		"uuid": "378FAA8D-0888-4249-8701-92D1C1F37C51",
+		"type": "Scene",
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+		"children": [
+			{
+				"uuid": "E7B44C44-DD75-4C29-B571-21AD6AEF0CA9",
+				"type": "Mesh",
+				"name": "FaceIndexedGeom",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+				"geometry": "0A8F2988-626F-411C-BD6A-AC656C4E6878",
+				"material": "1004175C-0998-4243-900E-1183CE95A692"
+			},
+			{
+				"uuid": "95EE0E37-CAA0-455D-8F12-7C4FDF6DF794",
+				"type": "PointLight",
+				"name": "PointLight 1",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,4.837141,1],
+				"color": 16777215,
+				"intensity": 0.25,
+				"distance": 0,
+				"decay": 1,
+				"shadow": {
+					"camera": {
+						"uuid": "34ED7BBB-6BFE-47F4-B69B-554EC468FE20",
+						"type": "PerspectiveCamera",
+						"fov": 90,
+						"zoom": 1,
+						"near": 0.5,
+						"far": 500,
+						"focus": 10,
+						"aspect": 1,
+						"filmGauge": 35,
+						"filmOffset": 0
+					}
+				}
+			},
+			{
+				"uuid": "0F2D0E48-F685-487E-8E04-99E0B76F9A19",
+				"type": "AmbientLight",
+				"name": "AmbientLight 1",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+				"color": 16777215,
+				"intensity": 1
+			}],
+		"background": 11184810
+	}
+}
