@@ -8,7 +8,10 @@
 			canvas { display: block; }
 		</style>
         <script src="three.js-master\build\three.js"></script>
-		<script src="lib\OrbitControls.js"></script>
+        <script src="lib\OrbitControls.js"></script>
+        <script type="module" src="three.js-master\src\loaders\ObjectLoader.js"></script>
+        <script type="module" src="lib\OBJLoader.js"></script>
+
     </head>
     <style>
         #info {
@@ -22,7 +25,7 @@
         }
     </style>
 	<body>
-        <div id="info"><h2>Rotating Stars</h2></div>
+        <div id="info"><h2>Rotating Stars</h2><button onclick="cubeAdd()">add</button></div>
 		<script>
             //기본 설정 - 화면 구성 및 시야각, 최대거리 최소 거리 등
 			const scene = new THREE.Scene();
@@ -42,6 +45,46 @@
             camera.position.set( 0, 10, 10 );
             controls.update();
 
+            //sky box test
+            let skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 100000);
+            let cubeMaterials = [
+                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/top.png"),  side: THREE.DoubleSide}),
+                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/1.png"),  side: THREE.DoubleSide}),
+                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/2.png"),  side: THREE.DoubleSide}),
+                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/3.png"),  side: THREE.DoubleSide}),
+                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/4.png"),  side: THREE.DoubleSide}),
+                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/bottom.png"),  side: THREE.DoubleSide})
+            ];
+
+            let cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterials);
+            let cube = new THREE.Mesh(skyboxGeometry, cubeMaterial);
+            scene.add(cube);
+
+            // let abientLight = new THREE.AmbientLight(0xFFFFFF, 0.3);
+
+            //로더 테스트
+            let loader = new THREE.ObjectLoader();
+
+            loader.load(
+                // resource URL
+                "models/json/example1.json",
+                // onLoad callback
+                // Here the loaded data is assumed to be an object
+                function ( obj ) {
+                    // Add the loaded object to the scene
+                    scene.add( obj );
+                },
+
+                // onProgress callback
+                function ( xhr ) {
+                    console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+                },
+                // onError callback
+                function ( err ) {
+                    console.error( 'An error happened' );
+                }
+            );
+
             //큐브 추가
             const geometry = new THREE.BoxGeometry();
             const material = new THREE.MeshLambertMaterial( { color: 0x00ff00, wireframe: false } );
@@ -49,11 +92,15 @@
             let cubes = {};
 
             //큐브들 생성
-            let i = 0;
-            while (i < 200) {
+            totalNumber = 1;
+            let i = totalNumber - 1;
+            
+
+            let k = 0;
+            while (k < totalNumber) {
                 let cube = new THREE.Mesh( geometry, material );
-                cubes["cube" + i] = cube;
-                i++;
+                cubes["cube" + k] = cube;
+                k++;
             }
 
             //큐브들 포지셔닝
@@ -70,16 +117,41 @@
             //라인 생성(기존 큐브를 중심)
             const material2 = new THREE.LineBasicMaterial( { color: 0x0000ff } );
 
-            const points = [];
+            let points = [];
             for (let cubesKey of Object.keys(cubes)) {
                 let tempcubes = cubes[cubesKey];
                 points.push(new THREE.Vector3( tempcubes.position.x, tempcubes.position.y, tempcubes.position.z ));
             }
 
-            const geometry2 = new THREE.BufferGeometry().setFromPoints( points );
-            const line = new THREE.Line( geometry2, material2 );
+            let geometry2 = new THREE.BufferGeometry().setFromPoints( points );
+            let line = new THREE.Line( geometry2, material2 );
 
             scene.add( line );
+
+
+            function cubeAdd() {
+                i++;
+                let cube = new THREE.Mesh( geometry, material );
+                cubes["cube" + i] = cube;
+
+                cubes["cube" + i].position.x = (Math.random()-0.5)*30;
+                cubes["cube" + i].position.y = (Math.random()-0.5)*30;
+                cubes["cube" + i].position.z = (Math.random()-0.5)*30;
+
+                scene.add( cubes["cube" + i] );
+
+                let tempcube = cubes["cube" + i];
+                points.push(new THREE.Vector3( tempcube.position.x, tempcube.position.y, tempcube.position.z ));
+                geometry2 = new THREE.BufferGeometry().setFromPoints( points );
+                line = new THREE.Line( geometry2, material2 );
+                scene.add( line );
+            }
+
+            //원 이동
+            const sphereGeometry = new THREE.SphereGeometry( 0.5, 32, 32 );
+            const sphereMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+            const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+            scene.add( sphere );
 
             //라이트 설정
             let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
@@ -90,10 +162,19 @@
 
             //실제 렌더 준비 및 시작
             camera.position.set( 0, 0, 15 );
-			camera.lookAt( 0, 0, 0 );
+            camera.lookAt( 0, 0, 0 );
+            
 
             function animate() {
                 requestAnimationFrame( animate );
+                // points[0].position.x
+                // points[1].position.x
+                if (sphere.position.x < 10){
+                    sphere.position.x += 0.5;
+                } else {
+                    sphere.position.x = 0;
+                }
+
 
                 for (let cubekey of Object.keys(cubes)) {
                     cubes[cubekey].rotation.x += 0.1 * Math.random();
@@ -106,7 +187,9 @@
             animate();
         </script>
         <script>
-
+            function add(){
+                totalNumber +=1;
+            }
         </script>
 	</body>
 </html>
