@@ -8,7 +8,10 @@
 			canvas { display: block; }
 		</style>
         <script src="three.js-master\build\three.js"></script>
-		<script src="lib\OrbitControls.js"></script>
+		<!-- <script src="lib\OrbitControls.js"></script> -->
+		<script type="module" src="node_modules\three\examples\jsm\controls\OrbitControls.js">
+			import { orbitcontrols } from OrbitControls; 
+		</script>
 	</head>
 	<body>
         <script>
