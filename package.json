@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/ArkimCity/three.js_practice#readme",
   "dependencies": {
+    "three": "^0.124.0",
     "threex": "^1.0.0"
   }
 }

@@ -7,11 +7,11 @@
 			body { margin: 0; }
 			canvas { display: block; }
 		</style>
-        <script src="three.js-master\build\three.js"></script>
+        <script src="node_modules\three\build\three.js"></script>
         <script src="lib\OrbitControls.js"></script>
         <script type="module" src="three.js-master\src\loaders\ObjectLoader.js"></script>
         <script type="module" src="lib\OBJLoader.js"></script>
-        <!-- <script type="text/javascript" src="https://unpkg.com/threex-domevents@1.0.0/threex.domevents.js"></script> -->
+        <script type="module" src="node_modules\threex\tmp\threex-v0\threex.domevent.js"></script>
     </head>
     <style>
         #info {
@@ -128,7 +128,20 @@
 
             scene.add( line );
 
+            //원 이동
+            const sphereGeometry = new THREE.SphereGeometry( 0.5, 32, 32 );
+            const sphereMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+            const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+            scene.add( sphere );
 
+            //라이트 설정
+            let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+            scene.add(ambientLight);
+
+            let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
+            scene.add(pointLight1);
+
+            //큐브 추가
             function cubeAdd() {
                 i++;
                 let cube = new THREE.Mesh( geometry, material );
@@ -147,36 +160,26 @@
                 scene.add( line );
             }
 
-            //원 이동
-            const sphereGeometry = new THREE.SphereGeometry( 0.5, 32, 32 );
-            const sphereMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-            const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
-            scene.add( sphere );
-
-            //라이트 설정
-            let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
-            scene.add(ambientLight);
-
-            let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
-            scene.add(pointLight1);
 
             //실제 렌더 준비 및 시작
             camera.position.set( 0, 0, 15 );
             camera.lookAt( 0, 0, 0 );
             
 
-            //threex 를 이용한 이벤트
-            // var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
-            // domEvents.addEventListener(cube, 'mousedown', onDocumentMouseDown, false);
-            // domEvents.addEventListener(cube1, 'mousedown', onDocumentMouseDown, false);
+            // threex 를 이용한 이벤트
+            /*
+            var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
+            domEvents.addEventListener(cube, 'mousedown', onDocumentMouseDown, false);
+            domEvents.addEventListener(cube1, 'mousedown', onDocumentMouseDown, false);
 
-            // function onDocumentMouseDown(event){
-            //     if (event.target == cube){
+            function onDocumentMouseDown(event){
+                if (event.target == cube){
 
-            //     }
-            //         //do stuff
-            // }
-
+                }
+                    //do stuff
+            }
+            */
+           
             function animate() {
                 requestAnimationFrame( animate );
                 // points[0].position.x

@@ -14,16 +14,14 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-</head>
-
-<body>
     <script src="js/three.js"></script>
     <script src="js/three.min.js"></script>
     <script src="js/OrbitControls.js"></script>
     <script src="js/GLTFLoader.js"></script>
     <script src="js/threex.domevents.js"></script>
+</head>
 
-
+<body>
     <div id="app">
         <!-- <button onclick="Insert()">value</button> -->
         x : <input type="text" name="x" v-model="x"> <br>
@@ -101,7 +99,9 @@
         const cubes = [
 
         ];
+
         let target = [0, 0];
+
         const domEvents = new THREEx.DomEvents(camera, renderer.domElement);
         let time = 2;
         function addevent(i) {
@@ -120,6 +120,7 @@
                 }
             })
         }
+
         function linemaker() {
             const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
 
