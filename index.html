@@ -11,7 +11,7 @@
         <script src="lib\OrbitControls.js"></script>
         <script type="module" src="three.js-master\src\loaders\ObjectLoader.js"></script>
         <script type="module" src="lib\OBJLoader.js"></script>
-        <script type="module" src="lib\threex.domevents.js"></script>
+        <script src="lib\threex.domevents.js"></script>
     </head>
     <style>
         #info {
@@ -37,9 +37,9 @@
 
             //OrbitControls 적용
             const controls = new THREE.OrbitControls( camera, renderer.domElement);
-            controls.autoRotate = true;
-            controls.autoRotateSpeed = 3;
-            controls.enabled = true;
+            // controls.autoRotate = true;
+            // controls.autoRotateSpeed = 3;
+            controls.enabled = false;
 
             //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
             camera.position.set( 0, 10, 10 );
@@ -48,12 +48,12 @@
             //sky box test
             let skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 100000);
             let cubeMaterials = [
-                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/top.png"),  side: THREE.DoubleSide}),
                 new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/1.png"),  side: THREE.DoubleSide}),
-                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/2.png"),  side: THREE.DoubleSide}),
                 new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/3.png"),  side: THREE.DoubleSide}),
-                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/4.png"),  side: THREE.DoubleSide}),
-                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/bottom.png"),  side: THREE.DoubleSide})
+                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/top.png"),  side: THREE.DoubleSide}),
+                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/bottom.png"),  side: THREE.DoubleSide}),
+                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/2.png"),  side: THREE.DoubleSide}),
+                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/4.png"),  side: THREE.DoubleSide})
             ];
 
             let cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterials);
@@ -92,7 +92,7 @@
             let cubes = {};
 
             //큐브들 생성
-            totalNumber = 10;
+            totalNumber = 2;
             let i = totalNumber - 1;
             
 
@@ -128,11 +128,11 @@
 
             scene.add( line );
 
-            //원 이동
+            //원 추가
             const sphereGeometry = new THREE.SphereGeometry( 0.5, 32, 32 );
             const sphereMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
             const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
-            scene.add( sphere );
+            // scene.add( sphere );
 
             //라이트 설정
             let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
@@ -160,20 +160,22 @@
                 scene.add( line );
             }
 
-            //실제 렌더 준비 및 시작
-            camera.position.set( 0, 0, 15 );
-            camera.lookAt( 0, 0, 0 );
-            
+
+            //threex 추가 
             var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
-            domEvents.addEventListener(cube, 'mousedown', onDocumentMouseDown, false);
-            domEvents.addEventListener(cube1, 'mousedown', onDocumentMouseDown, false);
+            domEvents.addEventListener(cubes["cube0"], 'mousedown', onDocumentMouseDown, false);
 
             function onDocumentMouseDown(event){
-                if (event.target == cube){
-
+                if (event.target == cubes["cube0"]){
+                    cubes["cube0"].position.x += 10;
                 }
                     //do stuff
             }
+
+            //실제 렌더 준비 및 시작
+            camera.position.set( 0, 0, 15 );
+            camera.lookAt( 0, 0, 0 );
+
 
             function animate() {
                 requestAnimationFrame( animate );

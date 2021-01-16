@@ -1,3 +1,0 @@
-project 폴더 가서
-
-npm install --save three
