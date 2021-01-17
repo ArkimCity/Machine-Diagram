@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>My first three.js app</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+    <script src="three.js-master\build\three.js"></script>
+    <script src="lib\OrbitControls.js"></script>
+    <script type="module" src="three.js-master\src\loaders\ObjectLoader.js"></script>
+    <script type="module" src="lib\OBJLoader.js"></script>
+    <script src="lib\threex.domevents.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+
+<style>
+    #info {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        text-align: center;
+        z-index: 100;
+        display: block;
+        color: aliceblue;
+    }
+</style>
+
+<body>
+ 
+        <div id="info">
+            <h2>Rotating Stars</h2><button onclick="cubeAdd()">add</button>
+        </div>
+        <script>
+            //기본 설정 - 화면 구성 및 시야각, 최대거리 최소 거리 등
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            //OrbitControls 적용
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            // controls.autoRotate = true;
+            // controls.autoRotateSpeed = 3;
+            // controls.enabled = false;
+            controls.enabled = true;
+
+            //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
+            camera.position.set(0, 10, 10);
+            controls.update();
+
+            //sky box test
+            let skyboxGeometry = new THREE.CubeGeometry(10, 10, 10);
+            const loader2 = new THREE.CubeTextureLoader();
+            loader2.setPath('models/images/');
+            const textureCube = loader2.load([
+                '1.png',
+                '3.png',
+                'top.png',
+                'bottom.png',
+                '2.png',
+                '4.png'
+            ]);
+            const cubeMaterials = new THREE.MeshBasicMaterial({ color: 0xffffff, envMap: textureCube });
+
+            // let cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterials);
+            let skyboxcube = new THREE.Mesh(skyboxGeometry, cubeMaterials);
+            scene.add(skyboxcube);
+
+            //로더 테스트
+            let loader = new THREE.ObjectLoader();
+
+            loader.load(
+                // resource URL
+                "models/json/example1.json",
+                // onLoad callback
+                // Here the loaded data is assumed to be an object
+                function (obj) {
+                    // Add the loaded object to the scene
+                    scene.add(obj);
+                },
+
+                // onProgress callback
+                function (xhr) {
+                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                },
+                // onError callback
+                function (err) {
+                    console.error('An error happened');
+                }
+            );
+
+            //큐브 추가
+            const geometry = new THREE.BoxGeometry();
+            const material = new THREE.MeshLambertMaterial({ color: 0x00ff00, wireframe: false });
+
+            let cubes = {};
+
+            //큐브들 생성
+            totalNumber = 2;
+            let i = totalNumber - 1;
+
+
+            let k = 0;
+            while (k < totalNumber) {
+                let cube = new THREE.Mesh(geometry, material);
+                cubes["cube" + k] = cube;
+                k++;
+            }
+
+            //큐브들 포지셔닝
+            let cubesKeys = Object.keys(cubes);
+            for (let j = 0; j < cubesKeys.length; j++) {
+                cubes["cube" + j].position.x = (Math.random() - 0.5) * 30;
+                cubes["cube" + j].position.y = (Math.random() - 0.5) * 30;
+                cubes["cube" + j].position.z = (Math.random() - 0.5) * 30;
+
+                scene.add(cubes["cube" + j]);
+            }
+
+
+            //라인 생성(기존 큐브를 중심)
+            const material2 = new THREE.LineBasicMaterial({ color: 0x0000ff });
+
+            let points = [];
+            for (let cubesKey of Object.keys(cubes)) {
+                let tempcubes = cubes[cubesKey];
+                points.push(new THREE.Vector3(tempcubes.position.x, tempcubes.position.y, tempcubes.position.z));
+            }
+
+            let geometry2 = new THREE.BufferGeometry().setFromPoints(points);
+            let line = new THREE.Line(geometry2, material2);
+
+            scene.add(line);
+
+            //원 추가
+            const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+            const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+            const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            // scene.add( sphere );
+
+            //라이트 설정
+            let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+            scene.add(ambientLight);
+
+            let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
+            scene.add(pointLight1);
+
+            //큐브 추가
+            function cubeAdd() {
+                i++;
+                let cube = new THREE.Mesh(geometry, material);
+                cubes["cube" + i] = cube;
+
+                cubes["cube" + i].position.x = (Math.random() - 0.5) * 30;
+                cubes["cube" + i].position.y = (Math.random() - 0.5) * 30;
+                cubes["cube" + i].position.z = (Math.random() - 0.5) * 30;
+
+                scene.add(cubes["cube" + i]);
+
+                let tempcube = cubes["cube" + i];
+                points.push(new THREE.Vector3(tempcube.position.x, tempcube.position.y, tempcube.position.z));
+                geometry2 = new THREE.BufferGeometry().setFromPoints(points);
+                line = new THREE.Line(geometry2, material2);
+                scene.add(line);
+            }
+
+
+            //threex 추가 
+            var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
+            domEvents.addEventListener(cubes["cube0"], 'mousedown', onDocumentMouseDown, false);
+
+            function onDocumentMouseDown(event) {
+                if (event.target == cubes["cube0"]) {
+                    cubes["cube0"].position.x += 10;
+                    line.position.x += 10;
+                }
+                //do stuff
+            }
+
+            //실제 렌더 준비 및 시작
+            camera.position.set(0, 0, 15);
+            camera.lookAt(0, 0, 0);
+
+
+            function animate() {
+                requestAnimationFrame(animate);
+                // points[0].position.x
+                // points[1].position.x
+                if (sphere.position.x < 10) {
+                    sphere.position.x += 0.5;
+                } else {
+                    sphere.position.x = 0;
+                }
+
+
+                for (let cubekey of Object.keys(cubes)) {
+                    cubes[cubekey].rotation.x += 0.1 * Math.random();
+                    cubes[cubekey].rotation.y += 0.1 * Math.random();
+                    cubes[cubekey].rotation.z += 0.1 * Math.random();
+                }
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+        </script>
+        <script>
+            function add() {
+                totalNumber += 1;
+            }
+        </script>
+    <div id="app">
+        <input type="text" v-model="point">
+        <input type="text" v-model="point">
+    </div>
+    <script>
+        let model = {point:""};
+
+        let vm = new Vue({
+            el: "#app",
+            data: model
+        })
+    </script>
+</body>
+
+</html>
