@@ -47,7 +47,7 @@
             controls.update();
 
             //sky box test
-            let skyboxGeometry = new THREE.CubeGeometry(10, 10, 10);
+            let skyboxGeometry = new THREE.CubeGeometry(1000, 1000, 1000);
             const loader2 = new THREE.CubeTextureLoader();
             loader2.setPath( 'models/images/' );
             const textureCube = loader2.load( [
@@ -63,6 +63,9 @@
             // let cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterials);
             let skyboxcube = new THREE.Mesh(skyboxGeometry, cubeMaterials);
             scene.add(skyboxcube);
+
+            let ambientLight2 = new THREE.AmbientLight(0xFFFFFF, 0.5);
+            scene.add(ambientLight2);
 
             //로더 테스트
             let loader = new THREE.ObjectLoader();
