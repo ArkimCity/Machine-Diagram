@@ -27,7 +27,6 @@
         position: absolute;
         top: 5%;
         width: 100%;
-        text-align: center;
         z-index: 100;
         display: block;
         color: aliceblue;
@@ -36,14 +35,13 @@
         position: absolute;
         bottom: 5%;
         width: 100%;
-        text-align: center;
         z-index: 100;
         display: block;
         color: aliceblue;
     }
 </style>
 
-<body>
+<body> 
  
         <!-- <div id="info">
             <h2>Rotating Stars</h2><button onclick="cubeAdd()">add</button>
@@ -162,10 +160,40 @@
             scene.add(line);
 
             //원 추가
-            const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-            const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-            const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-            // scene.add( sphere );
+            function shoot(startPoint, endPoint) {
+                const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+                const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+                sphere.position.x = cubes["cube" + startPoint].position.x;
+                sphere.position.y = cubes["cube" + startPoint].position.y;
+                sphere.position.z = cubes["cube" + startPoint].position.z;
+
+                scene.add( sphere );
+
+
+                cubes["cube" + startPoint].position.x - cubes["cube" + endPoint].position.x;
+                cubes["cube" + startPoint].position.y - cubes["cube" + endPoint].position.y;
+                cubes["cube" + startPoint].position.z - cubes["cube" + endPoint].position.z;
+
+                startMove = function() {
+                    playAlert = setInterval(function() {
+                        if (sphere.position.x == cubes["cube" + endPoint].position.x){
+                            stopMove();
+                            scene.remove(sphere)
+                        }
+                        sphere.position.x -= (cubes["cube" + startPoint].position.x - cubes["cube" + endPoint].position.x)/10
+                        sphere.position.y -= (cubes["cube" + startPoint].position.y - cubes["cube" + endPoint].position.y)/10
+                        sphere.position.z -= (cubes["cube" + startPoint].position.z - cubes["cube" + endPoint].position.z)/10
+                    }, 50);
+                };
+
+                stopMove = function() {
+                    clearInterval(playAlert);
+                };
+                
+                startMove()
+            }
 
             //라이트 설정
             let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
@@ -203,11 +231,13 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-                if (sphere.position.x < 10) {
-                    sphere.position.x += 0.5;
-                } else {
-                    sphere.position.x = 0;
-                }
+                // if (sphere in scene){
+                //     if (sphere.position.x < 10) {
+                //         sphere.position.x += 0.5;
+                //     } else {
+                //         sphere.position.x = 0;
+                //     }
+                // }
 
                 for (let cubekey of Object.keys(cubes)) {
                     cubes[cubekey].rotation.x += 0.1 * Math.random();
@@ -232,13 +262,15 @@
             <input type="text" v-model:number="point"><br>
             <button onclick="cubeAdd([model.x, model.y, model.z])">박스 추가</button><br>
         </div>
+        <div style="float: right;">
             박스번호 : <input type="text" v-model="boxnumber" style="width: 10%;">
             <button v-on:click="deleteCube()">삭제</button><br>
             <button v-on:click="toStartPoint()">시작점</button>
             <button v-on:click="toEndPoint()">종료점</button><br>
             정보 이동
             <input type="number" v-model:number="startPoint" style="width: 5%;"> to <input type="number" v-model:number="endPoint" style="width: 5%;">
-            <button>GO!</button>
+            <button onclick="shoot(model.startPoint, model.endPoint)">GO!</button>
+        </div>
     </div>
     <script>
         let model = {
