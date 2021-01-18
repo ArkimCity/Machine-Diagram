@@ -176,16 +176,20 @@
                 cubes["cube" + startPoint].position.y - cubes["cube" + endPoint].position.y;
                 cubes["cube" + startPoint].position.z - cubes["cube" + endPoint].position.z;
 
+
                 startMove = function() {
+                    tempNumber = 0;
                     playAlert = setInterval(function() {
-                        if (sphere.position.x == cubes["cube" + endPoint].position.x){
+                        maxNumber =15
+                        if (tempNumber == maxNumber){
                             stopMove();
                             scene.remove(sphere)
                         }
-                        sphere.position.x -= (cubes["cube" + startPoint].position.x - cubes["cube" + endPoint].position.x)/10
-                        sphere.position.y -= (cubes["cube" + startPoint].position.y - cubes["cube" + endPoint].position.y)/10
-                        sphere.position.z -= (cubes["cube" + startPoint].position.z - cubes["cube" + endPoint].position.z)/10
-                    }, 50);
+                        sphere.position.x -= (cubes["cube" + startPoint].position.x - cubes["cube" + endPoint].position.x)/maxNumber
+                        sphere.position.y -= (cubes["cube" + startPoint].position.y - cubes["cube" + endPoint].position.y)/maxNumber
+                        sphere.position.z -= (cubes["cube" + startPoint].position.z - cubes["cube" + endPoint].position.z)/maxNumber
+                        tempNumber++
+                    }, 25);
                 };
 
                 stopMove = function() {
