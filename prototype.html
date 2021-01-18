@@ -25,7 +25,16 @@
 <style>
     #info {
         position: absolute;
-        top: 50%;
+        top: 5%;
+        width: 100%;
+        text-align: center;
+        z-index: 100;
+        display: block;
+        color: aliceblue;
+    }
+    #app {
+        position: absolute;
+        bottom: 5%;
         width: 100%;
         text-align: center;
         z-index: 100;
@@ -36,9 +45,9 @@
 
 <body>
  
-        <div id="info">
+        <!-- <div id="info">
             <h2>Rotating Stars</h2><button onclick="cubeAdd()">add</button>
-        </div>
+        </div> -->
         <script>
             //기본 설정 - 화면 구성 및 시야각, 최대거리 최소 거리 등
             const scene = new THREE.Scene();
@@ -52,8 +61,8 @@
             const controls = new THREE.OrbitControls(camera, renderer.domElement);
             // controls.autoRotate = true;
             // controls.autoRotateSpeed = 3;
-            // controls.enabled = false;
-            controls.enabled = true;
+            controls.enabled = false;
+            // controls.enabled = true;
 
             //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
             camera.position.set(0, 10, 10);
@@ -75,7 +84,7 @@
 
             // let cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterials);
             let skyboxcube = new THREE.Mesh(skyboxGeometry, cubeMaterials);
-            scene.add(skyboxcube);
+            // scene.add(skyboxcube);
 
             //로더 테스트
             let loader = new THREE.ObjectLoader();
@@ -106,24 +115,33 @@
 
             let cubes = {};
 
-            //큐브들 생성
-            totalNumber = 2;
-            let i = totalNumber - 1;
+            //threex로 이벤트 추가 
+            var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
+            
+            function onDocumentMouseDown(event) {
+                console.log("클릭");
+                console.log(Object.values(cubes).indexOf(event.target));
+                model.boxnumber = Object.values(cubes).indexOf(event.target) //event.target; Object.keys(cubes).includes(event.target)
+            }
 
+            //큐브들 생성
+            totalNumber = 3;
+            let i = totalNumber - 1;
 
             let k = 0;
             while (k < totalNumber) {
                 let cube = new THREE.Mesh(geometry, material);
                 cubes["cube" + k] = cube;
+                domEvents.addEventListener(cubes["cube" + k], 'mousedown', onDocumentMouseDown, false);
                 k++;
             }
 
             //큐브들 포지셔닝
             let cubesKeys = Object.keys(cubes);
             for (let j = 0; j < cubesKeys.length; j++) {
-                cubes["cube" + j].position.x = (Math.random() - 0.5) * 30;
-                cubes["cube" + j].position.y = (Math.random() - 0.5) * 30;
-                cubes["cube" + j].position.z = (Math.random() - 0.5) * 30;
+                cubes["cube" + j].position.x = (Math.random() - 0.5) * 10;
+                cubes["cube" + j].position.y = (Math.random() - 0.5) * 10;
+                cubes["cube" + j].position.z = (Math.random() - 0.5) * 10;
 
                 scene.add(cubes["cube" + j]);
             }
@@ -157,52 +175,39 @@
             scene.add(pointLight1);
 
             //큐브 추가
-            function cubeAdd() {
+            function cubeAdd(point) {
                 i++;
-                let cube = new THREE.Mesh(geometry, material);
-                cubes["cube" + i] = cube;
+                cubes["cube" + i] = new THREE.Mesh(geometry, material);
 
-                cubes["cube" + i].position.x = (Math.random() - 0.5) * 30;
-                cubes["cube" + i].position.y = (Math.random() - 0.5) * 30;
-                cubes["cube" + i].position.z = (Math.random() - 0.5) * 30;
+                cubes["cube" + i].position.x = point[0];
+                cubes["cube" + i].position.y = point[1];
+                cubes["cube" + i].position.z = point[2];
 
                 scene.add(cubes["cube" + i]);
+
+
+                domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
 
                 let tempcube = cubes["cube" + i];
                 points.push(new THREE.Vector3(tempcube.position.x, tempcube.position.y, tempcube.position.z));
                 geometry2 = new THREE.BufferGeometry().setFromPoints(points);
                 line = new THREE.Line(geometry2, material2);
-                scene.add(line);
+                // scene.add(line);
             }
 
-
-            //threex 추가 
-            var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
-            domEvents.addEventListener(cubes["cube0"], 'mousedown', onDocumentMouseDown, false);
-
-            function onDocumentMouseDown(event) {
-                if (event.target == cubes["cube0"]) {
-                    cubes["cube0"].position.x += 10;
-                    line.position.x += 10;
-                }
-                //do stuff
-            }
 
             //실제 렌더 준비 및 시작
             camera.position.set(0, 0, 15);
             camera.lookAt(0, 0, 0);
-
+            controls.update();
 
             function animate() {
                 requestAnimationFrame(animate);
-                // points[0].position.x
-                // points[1].position.x
                 if (sphere.position.x < 10) {
                     sphere.position.x += 0.5;
                 } else {
                     sphere.position.x = 0;
                 }
-
 
                 for (let cubekey of Object.keys(cubes)) {
                     cubes[cubekey].rotation.x += 0.1 * Math.random();
@@ -220,15 +225,58 @@
             }
         </script>
     <div id="app">
-        <input type="text" v-model="point">
-        <input type="text" v-model="point">
+        <div style="float: left;">
+            <input type="number" v-model:number="x"><br>
+            <input type="number" v-model:number="y"><br>
+            <input type="number" v-model:number="z"><br>
+            <input type="text" v-model:number="point"><br>
+            <button onclick="cubeAdd([model.x, model.y, model.z])">박스 추가</button><br>
+        </div>
+            박스번호 : <input type="text" v-model="boxnumber" style="width: 10%;">
+            <button v-on:click="deleteCube()">삭제</button><br>
+            <button v-on:click="toStartPoint()">시작점</button>
+            <button v-on:click="toEndPoint()">종료점</button><br>
+            정보 이동
+            <input type="number" v-model:number="startPoint" style="width: 5%;"> to <input type="number" v-model:number="endPoint" style="width: 5%;">
+            <button>GO!</button>
     </div>
     <script>
-        let model = {point:""};
+        let model = {
+            point:  "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1 , 
+            x:0, y:0, z:0 , 
+            boxnumber:0,
+            startPoint : 0,
+            endPoint: 1
+        };
 
         let vm = new Vue({
             el: "#app",
-            data: model
+            data: model,
+            watch: {
+                x: function(){
+                    this.point = "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1;
+                },
+                y: function(){
+                    this.point = "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1;
+                },
+                z: function(){
+                    this.point = "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1;
+                }
+            },
+            methods: {
+                returnPoint: function(){
+                    return this.point = "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1;
+                },
+                deleteCube: function() {
+                    scene.remove(cubes["cube" + this.boxnumber]);
+                },
+                toStartPoint: function() {
+                    this.startPoint = this.boxnumber
+                },
+                toEndPoint: function() {
+                    this.endPoint = this.boxnumber
+                },
+            },
         })
     </script>
 </body>
