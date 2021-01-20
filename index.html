@@ -59,8 +59,8 @@
             const controls = new THREE.OrbitControls(camera, renderer.domElement);
             // controls.autoRotate = true;
             // controls.autoRotateSpeed = 3;
-            controls.enabled = false;
-            // controls.enabled = true;
+            // controls.enabled = false;
+            controls.enabled = true;
 
             //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
             camera.position.set(0, 10, 10);
@@ -89,7 +89,7 @@
 
             loader.load(
                 // resource URL
-                "models/json/example1.json",
+                "models/json/scene.json",
                 // onLoad callback
                 // Here the loaded data is assumed to be an object
                 function (obj) {
@@ -109,7 +109,7 @@
 
             //큐브 추가
             const geometry = new THREE.BoxGeometry();
-            const material = new THREE.MeshLambertMaterial({ color: 0x00ff00, wireframe: false });
+            const material = new THREE.MeshToonMaterial({ color: 0x00ff00, wireframe: false });
 
             let cubes = {};
 
@@ -162,7 +162,7 @@
             //원 추가
             function shoot(startPoint, endPoint) {
                 const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-                const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                const sphereMaterial = new THREE.MeshToonMaterial({ color: 0xffff00 });
                 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 
                 sphere.position.x = cubes["cube" + startPoint].position.x;
