@@ -17,6 +17,7 @@
     <script src="lib\OrbitControls.js"></script>
     <script type="module" src="three.js-master\src\loaders\ObjectLoader.js"></script>
     <script type="module" src="lib\OBJLoader.js"></script>
+    <!-- <script type="module" src="node_modules\three-legacyjsonloader\index.js"></script> -->
     <script src="lib\threex.domevents.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
@@ -61,8 +62,8 @@
             const controls = new THREE.OrbitControls(camera, renderer.domElement);
             // controls.autoRotate = true;
             // controls.autoRotateSpeed = 3;
-            controls.enabled = false;
-            // controls.enabled = true;
+            // controls.enabled = false;
+            controls.enabled = true;
 
             //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
             camera.position.set(0, 10, 10);
@@ -91,7 +92,7 @@
 
             loader.load(
                 // resource URL
-                "models/json/example1.json",
+                "models/json/scene.json",
                 // onLoad callback
                 // Here the loaded data is assumed to be an object
                 function (obj) {
