@@ -60,9 +60,9 @@
                 x : <input type="number" v-model:number="x"><br>
                 y : <input type="number" v-model:number="y"><br>
                 z : <input type="number" v-model:number="z"><br>
-                <input type="text" v-model:number="point"><br>
-                <button onclick="cubeAdd([model.x, model.y, model.z])">박스 추가</button>
-                <button onclick="cylAdd([model.x, model.y, model.z])">실린더 추가</button>
+                라벨 : <input type="text" v-model:value="label"><br>
+                <button onclick="cubeAdd([model.x, model.y, model.z])">박스 타입 추가</button>
+                <button onclick="cylAdd([model.x, model.y, model.z])">실린더 타입 추가</button>
             </div>
             <div style="float: right; margin-right: 25px; width: 35%; color: rgb(8, 7, 7);"><br>
                 선택된 박스번호 : <input type="text" v-model="boxnumber" style="width: 10%;">
@@ -107,6 +107,7 @@
                 },
                 deleteCube: function() {
                     domEvents.removeEventListener(cubes["cube" + this.boxnumber], 'mousedown', onDocumentMouseDown, false);
+                    scene.remove(texts["text" + this.boxnumber]);
                     scene.remove(cubes["cube" + this.boxnumber]);
                 },
                 toStartPoint: function() {
@@ -120,18 +121,19 @@
     </script>
     <script>
         // test용
-        cubeAdd([0,0,0], "Machine");
-        cylAdd([30,0,0], "DB");
-        cylAdd([10,0,10], "DB");
-        cylAdd([20,0,0], "DB");
-        cubeAdd([30,0,15], "Machine");
+        cubeAdd([5,10,0], "Machine 1");
+        cylAdd([30,0,5], "DB 1");
+        cylAdd([10,0,10], "DB 2");
+        cylAdd([20,10,0], "DB 3");
+        cubeAdd([30,10,15], "Machine 2");
 
-        cubeAdd([20,0,30], "Machine");
-        cubeAdd([20,0,40], "Machine");
+        cubeAdd([20,10,30], "Machine 3");
+        cubeAdd([20,10,40], "Machine 4");
 
         setInterval(()=>{
                 // shoot( parseInt(Math.random()*3),parseInt(Math.random()*3 + 4))
-                addLine( parseInt(Math.random()*3),parseInt(Math.random()*3 + 4))
+                addLine(parseInt(Math.random()*3),parseInt(Math.random()*3 + 5))
+                // addLine(parseInt(Math.random()*3),parseInt(cubes.length - Math.random()*3 - 2))
             }, 150);
 
         setInterval(() => {

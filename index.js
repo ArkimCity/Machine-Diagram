@@ -3,14 +3,12 @@
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 scene.background = new THREE.Color(0x444158);
-
+const texts = [];
 const renderer = new THREE.WebGLRenderer();
 // let effect = new OutlineEffect(renderer);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-
-
 
 //OrbitControls 적용
 
@@ -28,8 +26,18 @@ function switchOrbitControls(){
     }
 }
 
+//라이트 설정
+let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+scene.add(ambientLight);
+
+let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
+scene.add(pointLight1);
+
+camera.position.set(35, 15, 60);
+controls.target = new THREE.Vector3(15, 0, 0);
 //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
 controls.update();
+
 
 
 //큐브 추가
@@ -74,27 +82,8 @@ function move(element) {
 }
 
 //큐브들 생성
-let totalNumber = 0;
-let i = totalNumber - 1;
+let i = -1;
 
-let k = 0;
-while (k < totalNumber) {
-    let material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: false });
-    let cube = new THREE.Mesh(geometry, material);
-    cubes["cube" + k] = cube;
-    domEvents.addEventListener(cubes["cube" + k], 'mousedown', onDocumentMouseDown, false);
-    k++;
-}
-
-//큐브들 포지셔닝
-let cubesKeys = Object.keys(cubes);
-for (let j = 0; j < cubesKeys.length; j++) {
-    cubes["cube" + j].position.x = (Math.random() - 0.5) * 10;
-    cubes["cube" + j].position.y = (Math.random() - 0.5) * 10;
-    cubes["cube" + j].position.z = (Math.random() - 0.5) * 10;
-
-    scene.add(cubes["cube" + j]);
-}
 
 //라인 생성
 
@@ -192,16 +181,7 @@ function shoot(startPoint, endPoint) {
     startMove()
 }
 
-//라이트 설정
-let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
-scene.add(ambientLight);
 
-let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
-scene.add(pointLight1);
-
-camera.position.set(0, 5, 0);
-controls.target = new THREE.Vector3(30, 0, 30);
-controls.update();
 
 
 //큐브 추가
@@ -221,7 +201,7 @@ function cubeAdd(point, msg) {
     cubes["cube" + i].position.y = parseInt(point[1]);
     cubes["cube" + i].position.z = parseInt(point[2]);
 
-    addWord(msg, cubes["cube" + i].position)
+    addWord(msg, cubes["cube" + i].position, i);
     scene.add(cubes["cube" + i]);
 
     domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
@@ -246,30 +226,31 @@ function cylAdd(point, msg) {
     cubes["cube" + i].position.y = parseInt(point[1]);
     cubes["cube" + i].position.z = parseInt(point[2]);
 
-    
-    addWord(msg, cubes["cube" + i].position)
+    addWord(msg, cubes["cube" + i].position, i);
     scene.add(cubes["cube" + i]);
 
     domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
 }
 
 
-
-
-function addWord(msg, position){
+function addWord(msg, position, index){
     //폰트로더
     let textMesh;
     const fontLoader = new THREE.FontLoader();
     //텍스트 추가
     fontLoader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
         let material = new THREE.MeshBasicMaterial({ 
-            color: 0x8f96a5, 
+            color: 0xffffff, 
             opacity: 0.8, 
             transparent: true, 
             side: THREE.DoubleSide, 
             wireframe: false 
         });
     
+        if (msg == null){
+            msg = model.label;
+        }
+
         let fontGeometry = new THREE.TextGeometry( msg, {
             font: font,
             size: 0.8,
@@ -287,6 +268,52 @@ function addWord(msg, position){
         textMesh.position.x = position.x - 0.4
         textMesh.position.y = position.y + 2
         textMesh.position.z = position.z
+
+        model.x = 0;
+        model.y = 0;
+        model.z = 0;
+        model.label = "";
+        texts["text" + index] = textMesh
         scene.add(textMesh)
-    } );
+    });
+}
+
+function addAxisWord(msg, position){
+    //폰트로더
+    let textMesh;
+    const fontLoader = new THREE.FontLoader();
+    //텍스트 추가
+    fontLoader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+        let material = new THREE.MeshBasicMaterial({ 
+            color: 0x8f96a5, 
+            opacity: 0.8, 
+            transparent: true, 
+            side: THREE.DoubleSide, 
+            wireframe: false 
+        });
+    
+        if (msg == null){
+            msg = model.label;
+        }
+
+        let fontGeometry = new THREE.TextGeometry( msg, {
+            font: font,
+            size: 0.8,
+            height: 0.2,
+            curveSegments: 12,
+            bevelEnabled: true,
+            bevelThickness: 0.01,
+            bevelSize: 0.008,
+            bevelOffset: 0,
+            bevelSegments: 5
+        } );
+        
+        textGeo = new THREE.BufferGeometry().fromGeometry( fontGeometry );
+        textMesh = new THREE.Mesh( textGeo, material );
+        textMesh.position.x = position.x - 0.4
+        textMesh.position.y = position.y + 2
+        textMesh.position.z = position.z
+
+        scene.add(textMesh)
+    });
 }
