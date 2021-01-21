@@ -9,13 +9,6 @@
             margin: 0;
         }
 
-        nav {
-            margin-bottom: 0%;
-            height: 15vh;
-            background-color: rgb(255, 255, 255);
-            opacity: 50%;
-        }
-
         canvas {
             display: block;
         }
@@ -25,95 +18,602 @@
     <script src="lib\threex.domevents.js"></script>
     <script src="lib\THREE.meshLine.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <style>
-    #info {
+    /* #info {
         position: absolute;
         top: 5%;
         width: 100%;
         z-index: 100;
         display: block;
         color: aliceblue;
-    }
-    #app {
+    } */
+    #leftNav {
         position: absolute;
-        bottom: 5%;
-        width: 100%;
+        top: 1.5%;
+        left: 1.5%;
+        bottom: 1.5%;
+        width: 20%;
         z-index: 100;
         display: block;
         color: aliceblue;
+        height: 97vh;
+        background-color: rgb(0, 0, 0);
+        opacity: 50%;
+        text-align: center;
+    }
+
+    #popup {
+        position: absolute;
+        right: 1.5%;
+        bottom: 1.5%;
+        width: 20%;
+        z-index: 100;
+        display: block;
+        color: aliceblue;
+        height: 30vh;
+        background-color: rgb(0, 0, 0);
+        opacity: 50%;
+        text-align: center;
     }
 </style>
 
-<body> 
-        <!-- <div id="info">
+<body>
+    <!-- <div id="info">
             <h2>Rotating Stars</h2><button onclick="cubeAdd()">add</button>
         </div> -->
-        <!-- <script type="module"> -->
-        <script src="index.js"></script>
-        <script src="gridLines.js"></script>
-        <script src="animate.js"></script>
+    <!-- <script type="module"> -->
+    <script>
+        // import { OutlineEffect } from '/node_modules/three/examples/jsm/effects/OutlineEffect.js';
+        //기본 설정 - 화면 구성 및 시야각, 최대거리 최소 거리 등
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        scene.background = new THREE.Color(0x444158);
+        const texts = [];
+        const renderer = new THREE.WebGLRenderer();
+        // let effect = new OutlineEffect(renderer);
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        //OrbitControls 적용
+
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        // controls.autoRotate = true;
+        controls.autoRotateSpeed = 2;
+        controls.enabled = true;
+
+        function switchOrbitControls() {
+            if (controls.enabled) {
+                controls.enabled = false;
+                model.controlStatus = false;
+            } else {
+                controls.enabled = true;
+                model.controlStatus = true;
+            }
+        }
+
+        //라이트 설정
+        let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+        scene.add(ambientLight);
+
+        let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
+        scene.add(pointLight1);
+
+        camera.position.set(40, 20, 60);
+        controls.target = new THREE.Vector3(15, 0, 0);
+        //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
+        controls.update();
+
+
+
+        //큐브 추가
+        const geometry = new THREE.BoxGeometry(2, 3, 2);
+
+        let cubes = {};
+
+        //threex로 이벤트 추가 
+        var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
+
+        function onDocumentMouseDown(event) {
+            let picked = Object.values(cubes).indexOf(event.target);
+
+            if (model.boxnumber == picked) {
+                event.target.material.color.b = 0;
+                model.boxnumber = null;
+                model.startPoint = null;
+                model.endPoint = null;
+                console.log("to null");
+            } else {
+                if (model.boxnumber != null) {
+                    model.startPoint = model.boxnumber;
+                    model.endPoint = picked;
+                    cubes["cube" + model.boxnumber].material.color.b = 0;
+                }
+                model.boxnumber = picked
+                event.target.material.color.b = 1;
+                console.log(picked + "선택");
+            }
+        }
+
+        function move(element) {
+            if (key == "up") {
+                element.position.z += 10
+            } else if (key == "up") {
+                element.position.z -= 10
+            } else if (key == "left") {
+                element.position.x += 10
+            } else if (key == "right") {
+                element.position.x -= 10
+            }
+        }
+
+        //큐브들 생성
+        let i = -1;
+
+
+        //라인 생성
+
+        const lines = {};
+
+        function addLine(startPoint, endPoint) {
+            if (Object.keys(lines).includes(startPoint + "," + endPoint)) {
+                lines[startPoint + "," + endPoint].material.lineWidth += 0.1
+                lines[startPoint + "," + endPoint].material.color.b -= 0.1
+                lines[startPoint + "," + endPoint].material.color.g -= 0.1
+            } else {
+                let startCubePosition = cubes["cube" + startPoint].position;
+                let endCubePosition = cubes["cube" + endPoint].position;
+
+                let route = [-startCubePosition.x + endCubePosition.x, -startCubePosition.y + endCubePosition.y, -startCubePosition.z + endCubePosition.z]
+
+                let points = [];
+
+                points.push(new THREE.Vector3(0, 0, 0));
+                points.push(new THREE.Vector3(route[0] * 1 / 3 + Math.random() * 2 - 1, route[1] * 1 / 3 + Math.random() * 2 + 1, route[2] * 1 / 3 + Math.random() * 2 - 1));
+                points.push(new THREE.Vector3(route[0] * 2 / 3 + Math.random() * 2 - 1, route[1] * 2 / 3 + Math.random() * 2 + 1, route[2] * 2 / 3 + Math.random() * 2 - 1));
+                points.push(new THREE.Vector3(route[0], route[1], route[2]));
+
+                let curve = new THREE.CatmullRomCurve3(points);
+
+                let points2 = curve.getPoints(20);
+                let geometry = new THREE.BufferGeometry().setFromPoints(points2);
+
+                //meshline try
+                const meshLine = new MeshLine();
+                meshLine.setPoints(points2);
+
+                meshLine.setPoints(geometry, p => 2); // makes width 2 * lineWidth
+                meshLine.setPoints(geometry, p => 2 + Math.sin(50 * p)); // makes width sinusoidal
+
+                const material = new MeshLineMaterial();
+                const mesh = new THREE.Mesh(meshLine, material);
+                mesh.position.x = startCubePosition.x
+                mesh.position.y = startCubePosition.y
+                mesh.position.z = startCubePosition.z
+
+                mesh.material.lineWidth = 0.1
+                scene.add(mesh);
+                lines[startPoint + "," + endPoint] = mesh
+            }
+        }
+
+        //시간에 따라 라인이 점 점 줄어들어야 하는 함수
+
+        let removeLine = () => {
+            for (let tempkey of Object.keys(lines)) {
+                lines[tempkey].material.lineWidth -= 0.1
+                lines[tempkey].material.color.b += 0.1
+                lines[tempkey].material.color.g += 0.1
+                console.log("리무브 실행중");
+            }
+        };
+
+
+        //원 추가
+        function shoot(startPoint, endPoint) {
+            const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+            const sphereMaterial = new THREE.MeshToonMaterial({ color: 0xffff00 });
+            const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+            sphere.position.x = cubes["cube" + startPoint].position.x;
+            sphere.position.y = cubes["cube" + startPoint].position.y;
+            sphere.position.z = cubes["cube" + startPoint].position.z;
+
+            scene.add(sphere);
+
+            cubes["cube" + startPoint].position.x - cubes["cube" + endPoint].position.x;
+            cubes["cube" + startPoint].position.y - cubes["cube" + endPoint].position.y;
+            cubes["cube" + startPoint].position.z - cubes["cube" + endPoint].position.z;
+
+            startMove = function () {
+                let tempNumber = 0;
+                let playAlert = setInterval(function () {
+                    let maxNumber = 15
+                    if (tempNumber == maxNumber) {
+                        stopMove(playAlert);
+                        scene.remove(sphere)
+                    }
+                    sphere.position.x -= (cubes["cube" + startPoint].position.x - cubes["cube" + endPoint].position.x) / maxNumber
+                    sphere.position.y -= (cubes["cube" + startPoint].position.y - cubes["cube" + endPoint].position.y) / maxNumber
+                    sphere.position.z -= (cubes["cube" + startPoint].position.z - cubes["cube" + endPoint].position.z) / maxNumber
+                    tempNumber++
+                }, 25);
+            };
+
+            stopMove = function (playAlert) {
+                clearInterval(playAlert);
+            };
+
+            startMove()
+        }
+
+
+
+
+        //큐브 추가
+        function cubeAdd(point, msg) {
+            i++;
+            let material = new THREE.MeshBasicMaterial({
+                color: 0x00ff00,
+                opacity: 0.8,
+                transparent: true,
+                side: THREE.DoubleSide,
+                wireframe: false
+            });
+
+            cubes["cube" + i] = new THREE.Mesh(geometry, material);
+
+            cubes["cube" + i].position.x = parseInt(point[0]);
+            cubes["cube" + i].position.y = parseInt(point[1]);
+            cubes["cube" + i].position.z = parseInt(point[2]);
+
+            addWord(msg, cubes["cube" + i].position, i);
+            scene.add(cubes["cube" + i]);
+
+            domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
+        }
+
+        //실린더 추가
+        function cylAdd(point, msg) {
+            i++;
+            let material = new THREE.MeshBasicMaterial({
+                color: 0xff0000,
+                opacity: 0.8,
+                transparent: true,
+                side: THREE.DoubleSide,
+                wireframe: false
+            });
+
+            let cylGeometry = new THREE.CylinderGeometry(2, 2, 3);
+
+            cubes["cube" + i] = new THREE.Mesh(cylGeometry, material);
+
+            cubes["cube" + i].position.x = parseInt(point[0]);
+            cubes["cube" + i].position.y = parseInt(point[1]);
+            cubes["cube" + i].position.z = parseInt(point[2]);
+
+            addWord(msg, cubes["cube" + i].position, i);
+            scene.add(cubes["cube" + i]);
+
+            domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
+        }
+
+
+        function addWord(msg, position, index) {
+            //폰트로더
+            let textMesh;
+            const fontLoader = new THREE.FontLoader();
+            //텍스트 추가
+            fontLoader.load('fonts/helvetiker_regular.typeface.json', function (font) {
+                let material = new THREE.MeshBasicMaterial({
+                    color: 0xffffff,
+                    opacity: 0.8,
+                    transparent: true,
+                    side: THREE.DoubleSide,
+                    wireframe: false
+                });
+
+                if (msg == null) {
+                    msg = model.label;
+                }
+
+                let fontGeometry = new THREE.TextGeometry(msg, {
+                    font: font,
+                    size: 0.8,
+                    height: 0.2,
+                    curveSegments: 12,
+                    bevelEnabled: true,
+                    bevelThickness: 0.01,
+                    bevelSize: 0.008,
+                    bevelOffset: 0,
+                    bevelSegments: 5
+                });
+
+                textGeo = new THREE.BufferGeometry().fromGeometry(fontGeometry);
+                textMesh = new THREE.Mesh(textGeo, material);
+                textMesh.position.x = position.x - 0.4
+                textMesh.position.y = position.y + 2
+                textMesh.position.z = position.z
+
+                model.x = 0;
+                model.y = 0;
+                model.z = 0;
+                model.label = "";
+                texts["text" + index] = textMesh
+                scene.add(textMesh)
+            });
+        }
+
+        function addAxisWord(msg, position) {
+            //폰트로더
+            let textMesh;
+            const fontLoader = new THREE.FontLoader();
+            //텍스트 추가
+            fontLoader.load('fonts/helvetiker_regular.typeface.json', function (font) {
+                let material = new THREE.MeshBasicMaterial({
+                    color: 0x8f96a5,
+                    opacity: 0.8,
+                    transparent: true,
+                    side: THREE.DoubleSide,
+                    wireframe: false
+                });
+
+                if (msg == null) {
+                    msg = model.label;
+                }
+
+                let fontGeometry = new THREE.TextGeometry(msg, {
+                    font: font,
+                    size: 0.8,
+                    height: 0.2,
+                    curveSegments: 12,
+                    bevelEnabled: true,
+                    bevelThickness: 0.01,
+                    bevelSize: 0.008,
+                    bevelOffset: 0,
+                    bevelSegments: 5
+                });
+
+                textGeo = new THREE.BufferGeometry().fromGeometry(fontGeometry);
+                textMesh = new THREE.Mesh(textGeo, material);
+
+                textMesh.position.x = position.x - 0.4
+                textMesh.position.y = position.y + 2
+                textMesh.position.z = position.z
+
+                scene.add(textMesh)
+            });
+        }
+        const gridmaterial = new THREE.LineBasicMaterial({
+            color: 0xff0000
+        });
+        const gridLitematerial = new THREE.LineBasicMaterial({
+            color: 0xff0000,
+            opacity: 0.3,
+            transparent: true,
+        });
+
+        const gridlines = [];
+
+        const gridpointsX = [];
+        gridpointsX.push(new THREE.Vector3(-100, 0, 0));
+        gridpointsX.push(new THREE.Vector3(100, 0, 0));
+        const gridgeometryX = new THREE.BufferGeometry().setFromPoints(gridpointsX);
+        gridlines.push(new THREE.Line(gridgeometryX, gridmaterial));
+
+        const gridpointsY = [];
+        gridpointsY.push(new THREE.Vector3(0, -100, 0));
+        gridpointsY.push(new THREE.Vector3(0, 100, 0));
+        const gridgeometryY = new THREE.BufferGeometry().setFromPoints(gridpointsY);
+        gridlines.push(new THREE.Line(gridgeometryY, gridmaterial));
+
+        const gridpointsZ = [];
+        gridpointsZ.push(new THREE.Vector3(0, 0, -100));
+        gridpointsZ.push(new THREE.Vector3(0, 0, 100));
+        const gridgeometryZ = new THREE.BufferGeometry().setFromPoints(gridpointsZ);
+        gridlines.push(new THREE.Line(gridgeometryZ, gridmaterial));
+
+        for (let i = 0; i < 100; i += 5) {
+            let tempGridpointsZ = [];
+
+            tempGridpointsZ.push(new THREE.Vector3(0, i - 0, -0));
+            tempGridpointsZ.push(new THREE.Vector3(0, i - 0, 100));
+
+            let gridLitegeometry = new THREE.BufferGeometry().setFromPoints(tempGridpointsZ);
+
+            // gridlines.push(new THREE.Line(gridLitegeometry, gridLitematerial));
+
+            let tempGridpointsZ2 = [];
+
+            tempGridpointsZ2.push(new THREE.Vector3(i - 0, 0, -0));
+            tempGridpointsZ2.push(new THREE.Vector3(i - 0, 0, 100));
+
+            let gridLitegeometry2 = new THREE.BufferGeometry().setFromPoints(tempGridpointsZ2);
+
+            gridlines.push(new THREE.Line(gridLitegeometry2, gridLitematerial));
+        }
+
+        for (let i = 0; i < 100; i += 5) {
+            let tempGridpointsX = [];
+
+            tempGridpointsX.push(new THREE.Vector3(-0, i - 0, 0));
+            tempGridpointsX.push(new THREE.Vector3(100, i - 0, 0));
+
+            let gridLitegeometry = new THREE.BufferGeometry().setFromPoints(tempGridpointsX);
+
+            gridlines.push(new THREE.Line(gridLitegeometry, gridLitematerial));
+
+            let tempGridpointsX2 = [];
+
+            tempGridpointsX2.push(new THREE.Vector3(0, 0, i - 0));
+            tempGridpointsX2.push(new THREE.Vector3(100, 0, i - 0));
+
+            let gridLitegeometry2 = new THREE.BufferGeometry().setFromPoints(tempGridpointsX2);
+
+            // gridlines.push(new THREE.Line(gridLitegeometry2, gridLitematerial));
+        }
+
+        for (let i = 0; i < 100; i += 5) {
+            let tempGridpointsY = [];
+
+            tempGridpointsY.push(new THREE.Vector3(0, 0, i - 0));
+            tempGridpointsY.push(new THREE.Vector3(0, 100, i - 0));
+
+            let gridLitegeometry = new THREE.BufferGeometry().setFromPoints(tempGridpointsY);
+
+            // gridlines.push(new THREE.Line(gridLitegeometry, gridLitematerial));
+
+            let tempGridpointsY2 = [];
+
+            tempGridpointsY2.push(new THREE.Vector3(i - 0, 0, 0));
+            tempGridpointsY2.push(new THREE.Vector3(i - 0, 100, 0));
+
+            let gridLitegeometry2 = new THREE.BufferGeometry().setFromPoints(tempGridpointsY2);
+
+            gridlines.push(new THREE.Line(gridLitegeometry2, gridLitematerial));
+        }
+
+        for (gridline of gridlines) {
+            scene.add(gridline);
+        }
+
+        //축에 기본
+        addAxisWord("Axis X", { x: 40, y: 5, z: 0 })
+        addAxisWord("Axis Y", { x: 5, y: 40, z: 0 })
+        addAxisWord("Axis Z", { x: 0, y: 5, z: 40 })
+
+        for (let i = 0; i < 100; i += 10) {
+            addAxisWord(String(i), { x: i, y: 0, z: 0 })
+            addAxisWord(String(i), { x: 0, y: i, z: 0 })
+            addAxisWord(String(i), { x: 0, y: 0, z: i })
+        }
+        function animate() {
+            requestAnimationFrame(animate);
+
+            for (let cubekey of Object.keys(cubes)) {
+                // cubes[cubekey].rotation.x += 0.1 * Math.random();
+                // cubes[cubekey].rotation.y += 0.1 * Math.random();
+                // cubes[cubekey].rotation.z += 0.1 * Math.random();
+            }
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+    </script>
     <div id="app">
-        <nav>
-            <div style="float: left; margin-left: 25px; width: 30%; color: rgb(8, 7, 7);"><br>
-                x : <input type="number" v-model:number="x"><br>
-                y : <input type="number" v-model:number="y"><br>
-                z : <input type="number" v-model:number="z"><br>
-                라벨 : <input type="text" v-model:value="label"><br>
-                <button onclick="cubeAdd([model.x, model.y, model.z])">박스 타입 추가</button>
-                <button onclick="cylAdd([model.x, model.y, model.z])">실린더 타입 추가</button>
+        <div id="leftNav">
+            <div style="margin-top: 10px; color: rgb(255, 255, 255);"><br>
+                <div class="input-group" style="width: 80%; margin-left: 10%;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="">x,y,z</span>
+                    </div>
+                    <input type="text" class="form-control" v-model:number="x">
+                    <input type="text" class="form-control" v-model:number="y">
+                    <input type="text" class="form-control" v-model:number="z">
+                </div>
+                <div class="input-group mb-3" style="width: 80%; margin-left: 10%;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">label</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="name" aria-label="Username"
+                        aria-describedby="basic-addon1" v-model:value="label">
+                </div>
+                <button type="button" class="btn btn-secondary btn-md"
+                    onclick="cubeAdd([model.x, model.y, model.z])">Add Box Type</button>
+                <button type="button" class="btn btn-secondary btn-md" onclick="cylAdd([model.x, model.y, model.z])">Add
+                    Cylinder Type</button>
             </div>
-            <div style="float: right; margin-right: 25px; width: 35%; color: rgb(8, 7, 7);"><br>
+            <div style="position: absolute; bottom: 25px; color: rgb(255, 255, 255);"><br>
                 선택된 박스번호 : <input type="text" v-model="boxnumber" style="width: 10%;">
                 <button v-on:click="deleteCube()">삭제</button><br>
                 <!-- <button v-on:click="toStartPoint()">시작점</button>
                 <button v-on:click="toEndPoint()">종료점</button><br> -->
-                정보 이동 <input type="number" v-model:number="startPoint" style="width: 10%;">
-                to <input type="number" v-model:number="endPoint" style="width: 10%;"><br>
+                정보 이동 <input type="number" v-model:number="startPoint" style="width: 20%;">
+                to <input type="number" v-model:number="endPoint" style="width: 20%;"><br>
                 <button onclick="addLine(model.startPoint, model.endPoint)">addLine!</button>
-                <button onclick="shoot(model.startPoint, model.endPoint)">GO!</button><br>
-                회전 컨트롤 모드 <button onclick="switchOrbitControls()">변경</button>
+                <button onclick="shoot(model.startPoint, model.endPoint)">Shoot!</button><br><br>
+                <button v-if="controlStatus" class="btn btn-primary btn-lg" onclick="switchOrbitControls()">ORBIT/adjust
+                    ENABLED</button>
+                <button v-else class="btn btn-primary btn-lg" onclick="switchOrbitControls()">orbit/ADJUST
+                    ENABLED</button>
             </div>
-        </nav>
+        </div>
+        <div id="popup" v-if="controlStatus != true">
+            BOX INFO <br><br>
+            <div v-if="boxnumber != null">
+                <div class="input-group" style="width: 80%; margin-left: 10%;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="">x,y,z</span>
+                    </div>
+                    <input type="text" class="form-control" v-model:number="selX">
+                    <input type="text" class="form-control" v-model:number="selY">
+                    <input type="text" class="form-control" v-model:number="selZ">
+                </div>
+                <div class="input-group mb-3" style="width: 80%; margin-left: 10%;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Seleted</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="name" aria-label="Username"
+                        aria-describedby="basic-addon1" v-model:value="boxnumber">
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         let model = {
             label: "",
-            point:  "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1 , 
-            x:0, y:0, z:0 , 
+            point: "x : " + this.x * 1 + ", y : " + this.y * 1 + ", z : " + this.z * 1,
+            x: 0, y: 0, z: 0,
             boxnumber: null,
-            startPoint : null,
-            endPoint: null
+            startPoint: null,
+            endPoint: null,
+            controlStatus: true,
+            selX: 0, selY: 0, selZ: 0,
         };
 
         let vm = new Vue({
             el: "#app",
             data: model,
             watch: {
-                x: function(){
-                    this.point = "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1;
+                boxnumber: function () {
+                    if (this.boxnumber != null) {
+                        this.selX = cubes["cube" + this.boxnumber].position.x;
+                        this.selY = cubes["cube" + this.boxnumber].position.y;
+                        this.selZ = cubes["cube" + this.boxnumber].position.z;
+                    }
                 },
-                y: function(){
-                    this.point = "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1;
+                selX: function () {
+                    cubes["cube" + this.boxnumber].position.x = this.selX;
+                    texts["text" + this.boxnumber].position.x = parseInt(this.selX) - 0.4;
                 },
-                z: function(){
-                    this.point = "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1;
-                }
+                selY: function () {
+                    cubes["cube" + this.boxnumber].position.y = this.selY;
+                    texts["text" + this.boxnumber].position.y = parseInt(this.selY) + 2;
+                },
+                selZ: function () {
+                    cubes["cube" + this.boxnumber].position.z = this.selZ;
+                    texts["text" + this.boxnumber].position.z = this.selZ;
+                },
             },
             methods: {
-                returnPoint: function(){
-                    return this.point = "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1;
+                returnPoint: function () {
+                    return this.point = "x : " + this.x * 1 + ", y : " + this.y * 1 + ", z : " + this.z * 1;
                 },
-                deleteCube: function() {
+                deleteCube: function () {
                     domEvents.removeEventListener(cubes["cube" + this.boxnumber], 'mousedown', onDocumentMouseDown, false);
                     scene.remove(texts["text" + this.boxnumber]);
                     scene.remove(cubes["cube" + this.boxnumber]);
                 },
-                toStartPoint: function() {
+                toStartPoint: function () {
                     this.startPoint = this.boxnumber
                 },
-                toEndPoint: function() {
+                toEndPoint: function () {
                     this.endPoint = this.boxnumber
                 },
             },
@@ -121,24 +621,24 @@
     </script>
     <script>
         // test용
-        cubeAdd([5,10,0], "Machine 1");
-        cylAdd([30,0,5], "DB 1");
-        cylAdd([10,0,10], "DB 2");
-        cylAdd([20,10,0], "DB 3");
-        cubeAdd([30,10,15], "Machine 2");
+        cubeAdd([5, 10, 0], "Machine 1");
+        cylAdd([30, 0, 5], "DB 1");
+        cylAdd([10, 0, 10], "DB 2");
+        cylAdd([20, 10, 0], "DB 3");
+        cubeAdd([30, 10, 15], "Machine 2");
 
-        cubeAdd([20,10,30], "Machine 3");
-        cubeAdd([20,10,40], "Machine 4");
-
-        setInterval(()=>{
-                // shoot( parseInt(Math.random()*3),parseInt(Math.random()*3 + 4))
-                addLine(parseInt(Math.random()*3),parseInt(Math.random()*3 + 5))
-                // addLine(parseInt(Math.random()*3),parseInt(cubes.length - Math.random()*3 - 2))
-            }, 150);
+        cubeAdd([20, 10, 30], "Machine 3");
+        cubeAdd([20, 10, 40], "Machine 4");
 
         setInterval(() => {
-                removeLine();
-            }, 1350);
+            shoot(parseInt(Math.random() * 3), parseInt(Math.random() * 3 + 4))
+            // addLine(parseInt(Math.random()*3),parseInt(Math.random()*3 + 5))
+            // addLine(parseInt(Math.random()*3),parseInt(cubes.length - Math.random()*3 - 2))
+        }, 150);
+
+        setInterval(() => {
+            removeLine();
+        }, 1350);
     </script>
 </body>
 

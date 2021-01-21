@@ -18,11 +18,13 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.autoRotateSpeed = 2;
 controls.enabled = true;
 
-function switchOrbitControls(){
-    if (controls.enabled == true){
+function switchOrbitControls() {
+    if (controls.enabled) {
         controls.enabled = false;
+        model.controlStatus = false;
     } else {
         controls.enabled = true;
+        model.controlStatus = true;
     }
 }
 
@@ -33,7 +35,7 @@ scene.add(ambientLight);
 let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
 scene.add(pointLight1);
 
-camera.position.set(35, 15, 60);
+camera.position.set(40, 20, 60);
 controls.target = new THREE.Vector3(15, 0, 0);
 //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
 controls.update();
@@ -310,6 +312,7 @@ function addAxisWord(msg, position){
         
         textGeo = new THREE.BufferGeometry().fromGeometry( fontGeometry );
         textMesh = new THREE.Mesh( textGeo, material );
+        
         textMesh.position.x = position.x - 0.4
         textMesh.position.y = position.y + 2
         textMesh.position.z = position.z

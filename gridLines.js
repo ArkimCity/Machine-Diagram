@@ -55,7 +55,7 @@ for (let i = 0; i < 100; i+= 5) {
 
     let gridLitegeometry = new THREE.BufferGeometry().setFromPoints(tempGridpointsX);
 
-    // gridlines.push(new THREE.Line(gridLitegeometry, gridLitematerial));
+    gridlines.push(new THREE.Line(gridLitegeometry, gridLitematerial));
 
     let tempGridpointsX2 = [];
 
@@ -64,7 +64,7 @@ for (let i = 0; i < 100; i+= 5) {
 
     let gridLitegeometry2 = new THREE.BufferGeometry().setFromPoints(tempGridpointsX2);
 
-    gridlines.push(new THREE.Line(gridLitegeometry2, gridLitematerial));
+    // gridlines.push(new THREE.Line(gridLitegeometry2, gridLitematerial));
 }
 
 for (let i = 0; i < 100; i+= 5) {
@@ -84,7 +84,7 @@ for (let i = 0; i < 100; i+= 5) {
 
     let gridLitegeometry2 = new THREE.BufferGeometry().setFromPoints(tempGridpointsY2);
 
-    // gridlines.push(new THREE.Line(gridLitegeometry2, gridLitematerial));
+    gridlines.push(new THREE.Line(gridLitegeometry2, gridLitematerial));
 }
 
 for (gridline of gridlines) {
@@ -93,8 +93,8 @@ for (gridline of gridlines) {
 
 //축에 기본
 addAxisWord("Axis X", {x:40,y:5,z:0})
-addAxisWord("Axis Y", {x:5,y:30,z:0})
-addAxisWord("Axis Z", {x:0,y:5,z:30})
+addAxisWord("Axis Y", {x:5,y:40,z:0})
+addAxisWord("Axis Z", {x:0,y:5,z:40})
 
 for (let i=0; i<100; i += 10) {
     addAxisWord(String(i), {x:i,y:0,z:0})
