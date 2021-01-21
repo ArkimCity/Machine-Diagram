@@ -13,10 +13,10 @@
 		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - Toon Material Variantions with OutlineEffect</div>
 
 		<script type="module">
-			import * as THREE from '../build/three.module.js';
-			import Stats from './jsm/libs/stats.module.js';
-			import { OrbitControls } from './jsm/controls/OrbitControls.js';
-			import { OutlineEffect } from './jsm/effects/OutlineEffect.js';
+			import * as THREE from '/node_modules/three/build/three.module.js';
+			import Stats from '/node_modules/three/examples/jsm/libs/stats.module.js';
+			import { OrbitControls } from '/node_modules/three/examples/jsm/controls/OrbitControls.js';
+			import { OutlineEffect } from '/node_modules/three/examples/jsm/effects/OutlineEffect.js';
 
 			let container, stats;
 
@@ -24,7 +24,7 @@
 			let particleLight;
 
 			const loader = new THREE.FontLoader();
-			loader.load( 'fonts/gentilis_regular.typeface.json', function ( font ) {
+			loader.load( 'prototype/gentilis_regular.typeface.json', function ( font ) {
 
 				init( font );
 				animate();
@@ -49,7 +49,7 @@
 				const cubeWidth = 400;
 				const numberOfSphersPerSide = 5;
 				const sphereRadius = ( cubeWidth / numberOfSphersPerSide ) * 0.8 * 0.5;
-				const stepSize = 1.0 / numberOfSphersPerSide;
+				const stepSize = 1 / numberOfSphersPerSide;
 
 				const geometry = new THREE.SphereBufferGeometry( sphereRadius, 32, 16 );
 
@@ -130,7 +130,7 @@
 				scene.add( new THREE.AmbientLight( 0x888888 ) );
 
 				const pointLight = new THREE.PointLight( 0xffffff, 2, 800 );
-				particleLight.add( pointLight );
+				// particleLight.add( pointLight );
 
 				//
 
@@ -180,9 +180,9 @@
 
 				const timer = Date.now() * 0.00025;
 
-				particleLight.position.x = Math.sin( timer * 7 ) * 300;
-				particleLight.position.y = Math.cos( timer * 5 ) * 400;
-				particleLight.position.z = Math.cos( timer * 3 ) * 300;
+				// particleLight.position.x = Math.sin( timer * 7 ) * 300;
+				// particleLight.position.y = Math.cos( timer * 5 ) * 400;
+				// particleLight.position.z = Math.cos( timer * 3 ) * 300;
 
 				effect.render( scene, camera );
 

@@ -9,18 +9,23 @@
             margin: 0;
         }
 
+        nav {
+            margin-bottom: 0%;
+            height: 15vh;
+            background-color: rgb(255, 255, 255);
+            opacity: 50%;
+        }
+
         canvas {
             display: block;
         }
     </style>
     <script src="node_modules\three\build\three.js"></script>
     <script src="lib\OrbitControls.js"></script>
-    <script type="module" src="node_modules\three\loaders\ObjectLoader.js"></script>
-    <script type="module" src="lib\OBJLoader.js"></script>
     <script src="lib\threex.domevents.js"></script>
+    <script src="lib\THREE.meshLine.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
-
 
 <style>
     #info {
@@ -42,247 +47,43 @@
 </style>
 
 <body> 
- 
         <!-- <div id="info">
             <h2>Rotating Stars</h2><button onclick="cubeAdd()">add</button>
         </div> -->
-        <script>
-            //기본 설정 - 화면 구성 및 시야각, 최대거리 최소 거리 등
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-            const renderer = new THREE.WebGLRenderer();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
-
-            //OrbitControls 적용
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
-            // controls.autoRotate = true;
-            // controls.autoRotateSpeed = 3;
-            // controls.enabled = false;
-            controls.enabled = true;
-
-            //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
-            camera.position.set(0, 10, 10);
-            controls.update();
-
-            //sky box test
-            let skyboxGeometry = new THREE.CubeGeometry(10, 10, 10);
-            const loader2 = new THREE.CubeTextureLoader();
-            loader2.setPath('models/images/');
-            const textureCube = loader2.load([
-                '1.png',
-                '3.png',
-                'top.png',
-                'bottom.png',
-                '2.png',
-                '4.png'
-            ]);
-            const cubeMaterials = new THREE.MeshBasicMaterial({ color: 0xffffff, envMap: textureCube });
-
-            // let cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterials);
-            let skyboxcube = new THREE.Mesh(skyboxGeometry, cubeMaterials);
-            // scene.add(skyboxcube);
-
-            //로더 테스트
-            let loader = new THREE.ObjectLoader();
-
-            loader.load(
-                // resource URL
-                "models/json/scene.json",
-                // onLoad callback
-                // Here the loaded data is assumed to be an object
-                function (obj) {
-                    // Add the loaded object to the scene
-                    scene.add(obj);
-                },
-
-                // onProgress callback
-                function (xhr) {
-                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-                },
-                // onError callback
-                function (err) {
-                    console.error('An error happened');
-                }
-            );
-
-            //큐브 추가
-            const geometry = new THREE.BoxGeometry();
-            const material = new THREE.MeshToonMaterial({ color: 0x00ff00, wireframe: false });
-
-            let cubes = {};
-
-            //threex로 이벤트 추가 
-            var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
-            
-            function onDocumentMouseDown(event) {
-                console.log("클릭");
-                console.log(Object.values(cubes).indexOf(event.target));
-                model.boxnumber = Object.values(cubes).indexOf(event.target) //event.target; Object.keys(cubes).includes(event.target)
-            }
-
-            //큐브들 생성
-            totalNumber = 3;
-            let i = totalNumber - 1;
-
-            let k = 0;
-            while (k < totalNumber) {
-                let cube = new THREE.Mesh(geometry, material);
-                cubes["cube" + k] = cube;
-                domEvents.addEventListener(cubes["cube" + k], 'mousedown', onDocumentMouseDown, false);
-                k++;
-            }
-
-            //큐브들 포지셔닝
-            let cubesKeys = Object.keys(cubes);
-            for (let j = 0; j < cubesKeys.length; j++) {
-                cubes["cube" + j].position.x = (Math.random() - 0.5) * 10;
-                cubes["cube" + j].position.y = (Math.random() - 0.5) * 10;
-                cubes["cube" + j].position.z = (Math.random() - 0.5) * 10;
-
-                scene.add(cubes["cube" + j]);
-            }
-
-
-            //라인 생성(기존 큐브를 중심)
-            const material2 = new THREE.LineBasicMaterial({ color: 0x0000ff });
-
-            let points = [];
-            for (let cubesKey of Object.keys(cubes)) {
-                let tempcubes = cubes[cubesKey];
-                points.push(new THREE.Vector3(tempcubes.position.x, tempcubes.position.y, tempcubes.position.z));
-            }
-
-            let geometry2 = new THREE.BufferGeometry().setFromPoints(points);
-            let line = new THREE.Line(geometry2, material2);
-
-            scene.add(line);
-
-            //원 추가
-            function shoot(startPoint, endPoint) {
-                const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-                const sphereMaterial = new THREE.MeshToonMaterial({ color: 0xffff00 });
-                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-
-                sphere.position.x = cubes["cube" + startPoint].position.x;
-                sphere.position.y = cubes["cube" + startPoint].position.y;
-                sphere.position.z = cubes["cube" + startPoint].position.z;
-
-                scene.add( sphere );
-
-
-                cubes["cube" + startPoint].position.x - cubes["cube" + endPoint].position.x;
-                cubes["cube" + startPoint].position.y - cubes["cube" + endPoint].position.y;
-                cubes["cube" + startPoint].position.z - cubes["cube" + endPoint].position.z;
-
-
-                startMove = function() {
-                    tempNumber = 0;
-                    playAlert = setInterval(function() {
-                        maxNumber =15
-                        if (tempNumber == maxNumber){
-                            stopMove();
-                            scene.remove(sphere)
-                        }
-                        sphere.position.x -= (cubes["cube" + startPoint].position.x - cubes["cube" + endPoint].position.x)/maxNumber
-                        sphere.position.y -= (cubes["cube" + startPoint].position.y - cubes["cube" + endPoint].position.y)/maxNumber
-                        sphere.position.z -= (cubes["cube" + startPoint].position.z - cubes["cube" + endPoint].position.z)/maxNumber
-                        tempNumber++
-                    }, 25);
-                };
-
-                stopMove = function() {
-                    clearInterval(playAlert);
-                };
-                
-                startMove()
-            }
-
-            //라이트 설정
-            let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
-            scene.add(ambientLight);
-
-            let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
-            scene.add(pointLight1);
-
-            //큐브 추가
-            function cubeAdd(point) {
-                i++;
-                cubes["cube" + i] = new THREE.Mesh(geometry, material);
-
-                cubes["cube" + i].position.x = point[0];
-                cubes["cube" + i].position.y = point[1];
-                cubes["cube" + i].position.z = point[2];
-
-                scene.add(cubes["cube" + i]);
-
-
-                domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
-
-                let tempcube = cubes["cube" + i];
-                points.push(new THREE.Vector3(tempcube.position.x, tempcube.position.y, tempcube.position.z));
-                geometry2 = new THREE.BufferGeometry().setFromPoints(points);
-                line = new THREE.Line(geometry2, material2);
-                // scene.add(line);
-            }
-
-
-            //실제 렌더 준비 및 시작
-            camera.position.set(0, 0, 15);
-            camera.lookAt(0, 0, 0);
-            controls.update();
-
-            function animate() {
-                requestAnimationFrame(animate);
-                // if (sphere in scene){
-                //     if (sphere.position.x < 10) {
-                //         sphere.position.x += 0.5;
-                //     } else {
-                //         sphere.position.x = 0;
-                //     }
-                // }
-
-                for (let cubekey of Object.keys(cubes)) {
-                    cubes[cubekey].rotation.x += 0.1 * Math.random();
-                    cubes[cubekey].rotation.y += 0.1 * Math.random();
-                    cubes[cubekey].rotation.z += 0.1 * Math.random();
-                }
-                controls.update();
-                renderer.render(scene, camera);
-            }
-            animate();
-        </script>
-        <script>
-            function add() {
-                totalNumber += 1;
-            }
-        </script>
+        <!-- <script type="module"> -->
+        <script src="index.js"></script>
+        <script src="gridLines.js"></script>
+        <script src="animate.js"></script>
     <div id="app">
-        <div style="float: left;">
-            <input type="number" v-model:number="x"><br>
-            <input type="number" v-model:number="y"><br>
-            <input type="number" v-model:number="z"><br>
-            <input type="text" v-model:number="point"><br>
-            <button onclick="cubeAdd([model.x, model.y, model.z])">박스 추가</button><br>
-        </div>
-        <div style="float: right;">
-            박스번호 : <input type="text" v-model="boxnumber" style="width: 10%;">
-            <button v-on:click="deleteCube()">삭제</button><br>
-            <button v-on:click="toStartPoint()">시작점</button>
-            <button v-on:click="toEndPoint()">종료점</button><br>
-            정보 이동
-            <input type="number" v-model:number="startPoint" style="width: 5%;"> to <input type="number" v-model:number="endPoint" style="width: 5%;">
-            <button onclick="shoot(model.startPoint, model.endPoint)">GO!</button>
-        </div>
+        <nav>
+            <div style="float: left; margin-left: 25px; width: 30%; color: rgb(8, 7, 7);"><br>
+                x : <input type="number" v-model:number="x"><br>
+                y : <input type="number" v-model:number="y"><br>
+                z : <input type="number" v-model:number="z"><br>
+                <input type="text" v-model:number="point"><br>
+                <button onclick="cubeAdd([model.x, model.y, model.z])">박스 추가</button>
+                <button onclick="cylAdd([model.x, model.y, model.z])">실린더 추가</button>
+            </div>
+            <div style="float: right; margin-right: 25px; width: 35%; color: rgb(8, 7, 7);"><br>
+                선택된 박스번호 : <input type="text" v-model="boxnumber" style="width: 10%;">
+                <button v-on:click="deleteCube()">삭제</button><br>
+                <!-- <button v-on:click="toStartPoint()">시작점</button>
+                <button v-on:click="toEndPoint()">종료점</button><br> -->
+                정보 이동 <input type="number" v-model:number="startPoint" style="width: 10%;">
+                to <input type="number" v-model:number="endPoint" style="width: 10%;"><br>
+                <button onclick="addLine(model.startPoint, model.endPoint)">addLine!</button>
+                <button onclick="shoot(model.startPoint, model.endPoint)">GO!</button><br>
+                회전 컨트롤 모드 <button onclick="switchOrbitControls()">변경</button>
+            </div>
+        </nav>
     </div>
     <script>
         let model = {
             point:  "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1 , 
             x:0, y:0, z:0 , 
-            boxnumber:0,
-            startPoint : 0,
-            endPoint: 1
+            boxnumber: null,
+            startPoint : null,
+            endPoint: null
         };
 
         let vm = new Vue({
@@ -304,6 +105,7 @@
                     return this.point = "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1;
                 },
                 deleteCube: function() {
+                    domEvents.removeEventListener(cubes["cube" + this.boxnumber], 'mousedown', onDocumentMouseDown, false);
                     scene.remove(cubes["cube" + this.boxnumber]);
                 },
                 toStartPoint: function() {
@@ -314,6 +116,23 @@
                 },
             },
         })
+    </script>
+    <script>
+        // test용
+        cylAdd([10,0,10]);
+        cylAdd([20,0,10]);
+        cubeAdd([30,0,15]);
+
+        cubeAdd([20,0,30]);
+        cubeAdd([20,0,40]);
+
+        setInterval(()=>{
+                addLine( parseInt(Math.random()*3),parseInt(Math.random()*3 + 3))
+            }, 150);
+
+        setInterval(() => {
+                removeLine();
+            }, 1350);
     </script>
 </body>
 

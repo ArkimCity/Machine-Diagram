@@ -44,23 +44,6 @@
             camera.position.set( 0, 10, 10 );
             controls.update();
 
-            //sky box test
-            let skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 100000);
-            let cubeMaterials = [
-                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/top.png"),  side: THREE.DoubleSide}),
-                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/1.png"),  side: THREE.DoubleSide}),
-                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/2.png"),  side: THREE.DoubleSide}),
-                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/3.png"),  side: THREE.DoubleSide}),
-                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/4.png"),  side: THREE.DoubleSide}),
-                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("models/images/bottom.png"),  side: THREE.DoubleSide})
-            ];
-
-            let cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterials);
-            let cube = new THREE.Mesh(skyboxGeometry, cubeMaterial);
-            scene.add(cube);
-
-            // let abientLight = new THREE.AmbientLight(0xFFFFFF, 0.3);
-
             //로더 테스트
             let loader = new THREE.ObjectLoader();
 
@@ -86,7 +69,13 @@
 
             //큐브 추가
             const geometry = new THREE.BoxGeometry();
-            const material = new THREE.MeshLambertMaterial( { color: 0x00ff00, wireframe: false } );
+            const material = new THREE.MeshLambertMaterial( { 
+                color: 0x00ff00, 
+                opacity: 0.5, 
+                transparent: true, 
+                side: THREE.DoubleSide, 
+                wireframe: true 
+            } );
 
             let cubes = {};
 
