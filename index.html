@@ -120,14 +120,17 @@
     </script>
     <script>
         // test용
-        cylAdd([10,0,10]);
-        cylAdd([20,0,10]);
-        cubeAdd([30,0,15]);
+        cubeAdd([0,0,0], "Machine");
+        cylAdd([30,0,0], "DB");
+        cylAdd([10,0,10], "DB");
+        cylAdd([20,0,0], "DB");
+        cubeAdd([30,0,15], "Machine");
 
-        cubeAdd([20,0,30]);
-        cubeAdd([20,0,40]);
+        cubeAdd([20,0,30], "Machine");
+        cubeAdd([20,0,40], "Machine");
 
         setInterval(()=>{
+                // shoot( parseInt(Math.random()*3),parseInt(Math.random()*3 + 4))
                 addLine( parseInt(Math.random()*3),parseInt(Math.random()*3 + 4))
             }, 150);
 

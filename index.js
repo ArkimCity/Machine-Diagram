@@ -1,7 +1,7 @@
 // import { OutlineEffect } from '/node_modules/three/examples/jsm/effects/OutlineEffect.js';
 //기본 설정 - 화면 구성 및 시야각, 최대거리 최소 거리 등
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 scene.background = new THREE.Color(0x444158);
 
 const renderer = new THREE.WebGLRenderer();
@@ -61,15 +61,15 @@ function onDocumentMouseDown(event) {
     }
 }
 
-function move(key) {
+function move(element) {
     if (key == "up") {
-        cubes["cube" + model.boxnumber].position.z += 10
+        element.position.z += 10
     } else if (key == "up") {
-        cubes["cube" + model.boxnumber].position.z -= 10
+        element.position.z -= 10
     } else if (key == "left") {
-        cubes["cube" + model.boxnumber].position.x += 10
+        element.position.x += 10
     } else if (key == "right") {
-        cubes["cube" + model.boxnumber].position.x -= 10
+        element.position.x -= 10
     }
 }
 
@@ -103,6 +103,8 @@ const lines = {};
 function addLine(startPoint, endPoint) {
     if (Object.keys(lines).includes(startPoint + "," + endPoint)){
         lines[startPoint + "," + endPoint].material.lineWidth += 0.1
+        lines[startPoint + "," + endPoint].material.color.b -= 0.1
+        lines[startPoint + "," + endPoint].material.color.g -= 0.1
     } else {
         let startCubePosition = cubes["cube" + startPoint].position;
         let endCubePosition = cubes["cube" + endPoint].position;
@@ -145,6 +147,8 @@ function addLine(startPoint, endPoint) {
 let removeLine = () => {
     for (let tempkey of Object.keys(lines)){
         lines[tempkey].material.lineWidth -= 0.1
+        lines[tempkey].material.color.b += 0.1
+        lines[tempkey].material.color.g += 0.1
     console.log("리무브 실행중");
     }
 };
@@ -201,7 +205,7 @@ controls.update();
 
 
 //큐브 추가
-function cubeAdd(point) {
+function cubeAdd(point, msg) {
     i++;
     let material = new THREE.MeshBasicMaterial({ 
         color: 0x00ff00, 
@@ -217,13 +221,14 @@ function cubeAdd(point) {
     cubes["cube" + i].position.y = parseInt(point[1]);
     cubes["cube" + i].position.z = parseInt(point[2]);
 
+    addWord(msg, cubes["cube" + i].position)
     scene.add(cubes["cube" + i]);
 
     domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
 }
 
 //실린더 추가
-function cylAdd(point) {
+function cylAdd(point, msg) {
     i++;
     let material = new THREE.MeshBasicMaterial({ 
         color: 0xff0000, 
@@ -241,25 +246,47 @@ function cylAdd(point) {
     cubes["cube" + i].position.y = parseInt(point[1]);
     cubes["cube" + i].position.z = parseInt(point[2]);
 
+    
+    addWord(msg, cubes["cube" + i].position)
     scene.add(cubes["cube" + i]);
 
     domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
 }
 
 
-//로더
-let loader = new THREE.ObjectLoader();
-//텍스트 추가
-// loader.load('prototype/gentilis_regular.typeface.json', function (font) {
-// });
-// const textGeometry = new THREE.TextGeometry( 'Hello three.js!', {
-//     font: 'Helvetica',
-//     size: 80,
-//     height: 5,
-//     curveSegments: 12,
-//     bevelEnabled: true,
-//     bevelThickness: 10,
-//     bevelSize: 8,
-//     bevelOffset: 0,
-//     bevelSegments: 5
-// } );
+
+
+function addWord(msg, position){
+    //폰트로더
+    let textMesh;
+    const fontLoader = new THREE.FontLoader();
+    //텍스트 추가
+    fontLoader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+        let material = new THREE.MeshBasicMaterial({ 
+            color: 0x8f96a5, 
+            opacity: 0.8, 
+            transparent: true, 
+            side: THREE.DoubleSide, 
+            wireframe: false 
+        });
+    
+        let fontGeometry = new THREE.TextGeometry( msg, {
+            font: font,
+            size: 0.8,
+            height: 0.2,
+            curveSegments: 12,
+            bevelEnabled: true,
+            bevelThickness: 0.01,
+            bevelSize: 0.008,
+            bevelOffset: 0,
+            bevelSegments: 5
+        } );
+        
+        textGeo = new THREE.BufferGeometry().fromGeometry( fontGeometry );
+        textMesh = new THREE.Mesh( textGeo, material );
+        textMesh.position.x = position.x - 0.4
+        textMesh.position.y = position.y + 2
+        textMesh.position.z = position.z
+        scene.add(textMesh)
+    } );
+}
