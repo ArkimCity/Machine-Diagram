@@ -79,6 +79,7 @@
     </div>
     <script>
         let model = {
+            label: "",
             point:  "x : " +  this.x * 1 + ", y : " +  this.y * 1 + ", z : " +  this.z * 1 , 
             x:0, y:0, z:0 , 
             boxnumber: null,
@@ -127,7 +128,7 @@
         cubeAdd([20,0,40]);
 
         setInterval(()=>{
-                addLine( parseInt(Math.random()*3),parseInt(Math.random()*3 + 3))
+                addLine( parseInt(Math.random()*3),parseInt(Math.random()*3 + 4))
             }, 150);
 
         setInterval(() => {

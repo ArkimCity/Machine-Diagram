@@ -18,7 +18,7 @@ document.body.appendChild(renderer.domElement);
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 // controls.autoRotate = true;
 controls.autoRotateSpeed = 2;
-controls.enabled = false;
+controls.enabled = true;
 
 function switchOrbitControls(){
     if (controls.enabled == true){
@@ -195,7 +195,7 @@ scene.add(ambientLight);
 let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
 scene.add(pointLight1);
 
-camera.position.set(50, 30, 50);
+camera.position.set(0, 5, 0);
 controls.target = new THREE.Vector3(30, 0, 30);
 controls.update();
 
@@ -205,7 +205,7 @@ function cubeAdd(point) {
     i++;
     let material = new THREE.MeshBasicMaterial({ 
         color: 0x00ff00, 
-        opacity: 0.5, 
+        opacity: 0.8, 
         transparent: true, 
         side: THREE.DoubleSide, 
         wireframe: false 
@@ -227,7 +227,7 @@ function cylAdd(point) {
     i++;
     let material = new THREE.MeshBasicMaterial({ 
         color: 0xff0000, 
-        opacity: 0.5, 
+        opacity: 0.8, 
         transparent: true, 
         side: THREE.DoubleSide, 
         wireframe: false 
