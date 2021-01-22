@@ -94,7 +94,7 @@ for (gridline of gridlines) {
 //축에 기본
 addAxisWord("Axis X", {x:40,y:5,z:0})
 addAxisWord("Axis Y", {x:5,y:40,z:0})
-addAxisWord("Axis Z", {x:0,y:5,z:40})
+addAxisWord("Depth", {x:0,y:5,z:40})
 
 for (let i=0; i<100; i += 10) {
     addAxisWord(String(i), {x:i,y:0,z:0})

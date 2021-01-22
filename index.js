@@ -137,10 +137,11 @@ function addLine(startPoint, endPoint) {
 
 let removeLine = () => {
     for (let tempkey of Object.keys(lines)){
-        lines[tempkey].material.lineWidth -= 0.1
-        lines[tempkey].material.color.b += 0.1
-        lines[tempkey].material.color.g += 0.1
-    console.log("리무브 실행중");
+        if (lines[tempkey].material.lineWidth > 0){
+            lines[tempkey].material.lineWidth -= 0.1
+            lines[tempkey].material.color.b += 0.1
+            lines[tempkey].material.color.g += 0.1
+        }
     }
 };
 
