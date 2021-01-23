@@ -205,13 +205,19 @@
                     domEvents.removeEventListener(cubes["cube" + this.boxnumber], 'mousedown', onDocumentMouseDown, false);
                     scene.remove(texts["text" + this.boxnumber]);
                     scene.remove(cubes["cube" + this.boxnumber]);
+
                     delete texts["text" + this.boxnumber];
                     delete cubes["cube" + this.boxnumber];
-                    // for (key of Object.keys(lines)){
-                    //     if (key.split(',').indexOf(this.boxnumber) != -1){
-                    //         delete lines[key];
-                    //     };
-                    // }
+
+
+                    ///////////////////////////////
+                    for (let tempLineKey of Object.keys(lines)){
+                        if (tempLineKey.split(',').includes(String(this.boxnumber))){
+                            scene.remove(lines[tempLineKey]);
+                            delete lines[tempLineKey];
+                        };
+                    }
+                    ///////////////////////////////
                 },
                 toStartPoint: function () {
                     this.startPoint = this.boxnumber
