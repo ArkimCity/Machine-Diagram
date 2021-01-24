@@ -4,11 +4,11 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 scene.background = new THREE.Color(0x444158);
 const texts = [];
-const renderer = new THREE.WebGLRenderer();
+const canvas = document.querySelector('#threeCanvas1');
+const renderer = new THREE.WebGLRenderer({canvas});
+renderer.setSize(window.innerWidth, window.innerHeight);
 // let effect = new OutlineEffect(renderer);
 
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
 
 //OrbitControls 적용
 
@@ -102,9 +102,8 @@ function addLine(startPoint, endPoint) {
     
         let route = [-startCubePosition.x + endCubePosition.x,-startCubePosition.y + endCubePosition.y,-startCubePosition.z + endCubePosition.z]
     
-        let points = [];
+        let points = [new THREE.Vector3(0,0,0)];
     
-        points.push(new THREE.Vector3(0,0,0));
         points.push(new THREE.Vector3(route[0]*1/3 + Math.random() * 2 - 1,route[1]*1/3 + Math.random() * 2 + 1,route[2]*1/3 + Math.random() * 2 - 1));
         points.push(new THREE.Vector3(route[0]*2/3 + Math.random() * 2 - 1,route[1]*2/3 + Math.random() * 2 + 1,route[2]*2/3 + Math.random() * 2 - 1));
         points.push(new THREE.Vector3(route[0],route[1],route[2]));
@@ -118,7 +117,7 @@ function addLine(startPoint, endPoint) {
         const meshLine = new MeshLine();
         meshLine.setPoints(points2);
     
-        meshLine.setPoints(geometry, p => 2); // makes width 2 * lineWidth
+        // meshLine.setPoints(geometry, p => 2); // makes width 2 * lineWidth
         meshLine.setPoints(geometry, p => 2 + Math.sin(50 * p)); // makes width sinusoidal
         
         const material = new MeshLineMaterial();
