@@ -5,8 +5,8 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 scene.background = new THREE.Color(0x444158);
 const texts = [];
 const canvas = document.querySelector('#threeCanvas1');
-const renderer = new THREE.WebGLRenderer({canvas});
-renderer.setSize(window.innerWidth, window.innerHeight);
+const renderer = new THREE.WebGLRenderer({canvas, antialias: true});
+// renderer.setSize(window.innerWidth, window.innerHeight);
 // let effect = new OutlineEffect(renderer);
 
 
