@@ -1,8 +1,15 @@
-<template>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { display: block; }
+		</style>
+	</head>
+	<body>
         <canvas id="threeCanvas1" style="width: 100%; height: 100%;"></canvas>
-</template>
-
-    <script src="..\lib\three.js"></script>
+        <script src="..\lib\three.js"></script>
 		<script>
             
 			const scene = new THREE.Scene();
@@ -29,3 +36,5 @@
 
 			animate();
 		</script>
+	</body>
+</html>
