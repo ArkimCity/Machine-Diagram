@@ -13,13 +13,14 @@
         <canvas id="myChart" width="400" height="400"></canvas>
         <script>
             var ctx = document.getElementById('myChart').getContext('2d');
+            var data = [12, 19, 3, 5, 2, 3];
             var myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
                     datasets: [{
                         label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
+                        data,
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
                             'rgba(54, 162, 235, 0.2)',
@@ -49,6 +50,12 @@
                     }
                 }
             });
+
+            setInterval(()=>{ 
+                data[0] += 1;
+                console.log("인터벌 실행중");
+            
+            }, 1000);
         </script>
     </div>
 </body>
