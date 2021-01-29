@@ -33,13 +33,13 @@ let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
 scene.add(ambientLight);
 
 let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
+pointLight1.position.set(10,10,10);
 scene.add(pointLight1);
 
 camera.position.set(40, 20, 60);
 controls.target = new THREE.Vector3(15, 0, 0);
 //position 등의 변경 후에는 컨트롤 업데이트 해줘야 함
 controls.update();
-
 
 
 //큐브 추가
@@ -145,7 +145,7 @@ let removeLine = () => {
 };
 
 
-//원 추가
+//원 쏘기
 function shoot(startPoint, endPoint) {
     const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
     const sphereMaterial = new THREE.MeshToonMaterial({ color: 0xffff00 });
