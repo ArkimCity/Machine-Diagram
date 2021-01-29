@@ -1,4 +1,5 @@
-function machine(x,y,z) {
+function machine(point,msg) {
+    
     let dae;
     let kinematics;
     let kinematicsTween;
@@ -7,6 +8,7 @@ function machine(x,y,z) {
     const loader = new THREE.ColladaLoader();
     // loader.load( './models/collada/kawada-hironx.dae', function ( collada ) {
     loader.load('./models/collada/abb_irb52_7_120.dae', function (collada) {
+        i++;
         dae = collada.scene;
         dae.traverse(function (child) {
             if (child.isMesh) {
@@ -14,13 +16,21 @@ function machine(x,y,z) {
                 child.material.flatShading = true;
             }
         });
-        dae.scale.x = dae.scale.y = dae.scale.z = 10;
+        dae.scale.x = dae.scale.y = dae.scale.z = 7;
         dae.updateMatrix();
         kinematics = collada.kinematics;
-        dae.position.x = x;
-        dae.position.y = y;
-        dae.position.z = z;
-        scene.add(dae);
+
+        cubes["cube" + i] = dae;
+
+        addWord(msg, cubes["cube" + i].position, i);
+
+        cubes["cube" + i].position.x = parseInt(point[0]);
+        cubes["cube" + i].position.y = parseInt(point[1]);
+        cubes["cube" + i].position.z = parseInt(point[2]);
+
+        scene.add(cubes["cube" + i]);
+
+        domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
         setupTween();
     });
 

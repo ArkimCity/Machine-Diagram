@@ -32,8 +32,8 @@ function switchOrbitControls() {
 let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
 scene.add(ambientLight);
 
-let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 50);
-pointLight1.position.set(10,10,10);
+let pointLight1 = new THREE.PointLight(0xFFFFFF, 3, 250);
+pointLight1.position.set(100,100,100);
 scene.add(pointLight1);
 
 camera.position.set(40, 20, 60);
@@ -54,7 +54,7 @@ function onDocumentMouseDown(event) {
     let picked = Object.values(cubes).indexOf(event.target);
 
     if (model.boxnumber == picked) {
-        event.target.material.color.b = 0;
+        // event.target.material.color.b = 0;
         model.boxnumber = null;
         model.startPoint = null;
         model.endPoint = null;
@@ -63,27 +63,15 @@ function onDocumentMouseDown(event) {
         if (model.boxnumber != null) {
             model.startPoint = model.boxnumber;
             model.endPoint = picked;
-            cubes["cube" + model.boxnumber].material.color.b = 0;
+            // cubes["cube" + model.boxnumber].material.color.b = 0;
         }
         model.boxnumber = picked
-        event.target.material.color.b = 1;
+        // event.target.material.color.b = 1;
         console.log(picked + "선택");
     }
 }
 
-function move(element) {
-    if (key == "up") {
-        element.position.z += 10
-    } else if (key == "up") {
-        element.position.z -= 10
-    } else if (key == "left") {
-        element.position.x += 10
-    } else if (key == "right") {
-        element.position.x -= 10
-    }
-}
-
-//큐브들 생성
+//큐브들 생성 기준
 let i = -1;
 
 
@@ -267,8 +255,8 @@ function addWord(msg, position, index){
         
         textGeo = new THREE.BufferGeometry().fromGeometry( fontGeometry );
         textMesh = new THREE.Mesh( textGeo, material );
-        textMesh.position.x = position.x - 0.4
-        textMesh.position.y = position.y + 2
+        textMesh.position.x = position.x + 3
+        textMesh.position.y = position.y + 1
         textMesh.position.z = position.z
 
         model.x = 0;

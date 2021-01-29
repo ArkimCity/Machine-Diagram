@@ -194,11 +194,11 @@
                 },
                 selX: function () {
                     cubes["cube" + this.boxnumber].position.x = this.selX;
-                    texts["text" + this.boxnumber].position.x = parseInt(this.selX) - 0.4;
+                    texts["text" + this.boxnumber].position.x = parseInt(this.selX) + 3;
                 },
                 selY: function () {
                     cubes["cube" + this.boxnumber].position.y = this.selY;
-                    texts["text" + this.boxnumber].position.y = parseInt(this.selY) + 2;
+                    texts["text" + this.boxnumber].position.y = parseInt(this.selY) + 1;
                 },
                 selZ: function () {
                     cubes["cube" + this.boxnumber].position.z = this.selZ;
@@ -247,7 +247,7 @@
         // test용
         // cubeAdd([5, 10, 0], "Machine 1");
 
-        machine(5, 10, 0);
+        machine([5, 10, 0], "Machine 1");
 
         cylAdd([30, 0, 5], "DB 1");
         cylAdd([10, 0, 10], "DB 2");
@@ -255,9 +255,9 @@
         // cubeAdd([30, 10, 15], "Machine 2");
         // cubeAdd([20, 10, 30], "Machine 3");
         // cubeAdd([20, 10, 40], "Machine 4");
-        machine(30, 10, 15);
-        machine(20, 0, 30);
-        machine(20, 10, 50);
+        machine([30, 10, 15], "Machine 2");
+        machine([20, 0, 30], "Machine 3");
+        machine([20, 10, 50], "Machine 4");
 
         setInterval(() => {
             if (model.toggled == "true") {
