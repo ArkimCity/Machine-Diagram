@@ -165,31 +165,6 @@ function shoot(startPoint, endPoint) {
     startMove()
 }
 
-//실린더 추가
-function cylAdd(point, msg) {
-    i++;
-    let material = new THREE.MeshBasicMaterial({ 
-        color: 0xff0000, 
-        opacity: 0.8, 
-        transparent: true, 
-        side: THREE.DoubleSide, 
-        wireframe: false 
-    });
-
-    let cylGeometry = new THREE.CylinderGeometry(2,2,3);
-
-    geomteries["cube" + i] = new THREE.Mesh(cylGeometry, material);
-
-    geomteries["cube" + i].position.x = parseInt(point[0]);
-    geomteries["cube" + i].position.y = parseInt(point[1]);
-    geomteries["cube" + i].position.z = parseInt(point[2]);
-
-    addWord(msg, geomteries["cube" + i].position, i);
-    scene.add(geomteries["cube" + i]);
-
-    domEvents.addEventListener(geomteries["cube" + i], 'mousedown', onDocumentMouseDown, false);
-}
-
 
 function addWord(msg, position, index){
     //폰트로더

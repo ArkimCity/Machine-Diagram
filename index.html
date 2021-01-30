@@ -78,6 +78,7 @@
     <script src="index.js"></script>
     <script src="gridLines.js"></script>
     <script src="kinematicModel.js"></script>
+    <script src="DatabaseModel.js"></script>
     <script src="animate.js"></script>
     <div id="app">
         <div id="leftNav">
@@ -192,31 +193,31 @@
             watch: {
                 boxnumber: function () {
                     if (this.boxnumber != null) {
-                        this.selX = cubes["cube" + this.boxnumber].position.x;
-                        this.selY = cubes["cube" + this.boxnumber].position.y;
-                        this.selZ = cubes["cube" + this.boxnumber].position.z;
-                        this.width = cubes["cube" + this.boxnumber].scale.x;
-                        this.height = cubes["cube" + this.boxnumber].scale.y;
+                        this.selX = geomteries["cube" + this.boxnumber].position.x;
+                        this.selY = geomteries["cube" + this.boxnumber].position.y;
+                        this.selZ = geomteries["cube" + this.boxnumber].position.z;
+                        this.width = geomteries["cube" + this.boxnumber].scale.x;
+                        this.height = geomteries["cube" + this.boxnumber].scale.y;
                     }
                 },
                 selX: function () {
-                    cubes["cube" + this.boxnumber].position.x = this.selX;
+                    geomteries["cube" + this.boxnumber].position.x = this.selX;
                     texts["text" + this.boxnumber].position.x = parseInt(this.selX) + 3;
                 },
                 selY: function () {
-                    cubes["cube" + this.boxnumber].position.y = this.selY;
+                    geomteries["cube" + this.boxnumber].position.y = this.selY;
                     texts["text" + this.boxnumber].position.y = parseInt(this.selY) + 1;
                 },
                 selZ: function () {
-                    cubes["cube" + this.boxnumber].position.z = this.selZ;
+                    geomteries["cube" + this.boxnumber].position.z = this.selZ;
                     texts["text" + this.boxnumber].position.z = this.selZ;
                 },
                 height: function () {
-                    cubes["cube" + this.boxnumber].scale.y = this.height;
+                    geomteries["cube" + this.boxnumber].scale.y = this.height;
                 },
                 width: function () {
-                    cubes["cube" + this.boxnumber].scale.x = this.width;
-                    cubes["cube" + this.boxnumber].scale.z = this.width;
+                    geomteries["cube" + this.boxnumber].scale.x = this.width;
+                    geomteries["cube" + this.boxnumber].scale.z = this.width;
                 }
             },
             methods: {
@@ -224,12 +225,12 @@
                     return this.point = "x : " + this.x * 1 + ", y : " + this.y * 1 + ", z : " + this.z * 1;
                 },
                 deleteCube: function () {
-                    domEvents.removeEventListener(cubes["cube" + this.boxnumber], 'mousedown', onDocumentMouseDown, false);
+                    domEvents.removeEventListener(geomteries["cube" + this.boxnumber], 'mousedown', onDocumentMouseDown, false);
                     scene.remove(texts["text" + this.boxnumber]);
-                    scene.remove(cubes["cube" + this.boxnumber]);
+                    scene.remove(geomteries["cube" + this.boxnumber]);
 
                     delete texts["text" + this.boxnumber];
-                    delete cubes["cube" + this.boxnumber];
+                    delete geomteries["cube" + this.boxnumber];
 
 
                     ///////////////////////////////
