@@ -1,5 +1,4 @@
 function addMachine(point,msg) {
-    
     let dae;
     let kinematics;
     let kinematicsTween;
@@ -28,16 +27,28 @@ function addMachine(point,msg) {
         geomteries["cube" + i].position.y = parseInt(point[1]);
         geomteries["cube" + i].position.z = parseInt(point[2]);
 
+        geomteries["cube" + i].timeDuration = setupTween(i);
+        setupShoot(i);
         scene.add(geomteries["cube" + i]);
 
+
+
         domEvents.addEventListener(geomteries["cube" + i], 'mousedown', onDocumentMouseDown, false);
-        setupTween();
     });
 
-    function setupTween() {
+    function setupShoot(machineNumber) {
+        setInterval(() => {
+            if (model.toggled == "true") {
+                shoot(machineNumber, parseInt(Math.random() * 3))
+            } else {
+                addLine(machineNumber, parseInt(Math.random() * 3))
+            }
+        }, geomteries["cube" + machineNumber].timeDuration);
+    }
 
-        const duration = THREE.MathUtils.randInt(1000, 5000);
+    function setupTween(machineNumber) {
 
+        const duration = THREE.MathUtils.randInt(1500, 1500);
         const target = {};
 
         for (const prop in kinematics.joints) {
@@ -86,7 +97,7 @@ function addMachine(point,msg) {
 
         setTimeout(setupTween, duration);
 
+        return duration;
     }
-
 
 }
