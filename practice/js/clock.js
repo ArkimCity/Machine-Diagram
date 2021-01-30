@@ -1,7 +1,0 @@
-Clock = () => {
-
-}
-
-export default {
-    
-}

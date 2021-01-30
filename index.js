@@ -1,18 +1,16 @@
 // import { OutlineEffect } from '/node_modules/three/examples/jsm/effects/OutlineEffect.js';
 //기본 설정 - 화면 구성 및 시야각, 최대거리 최소 거리 등
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-scene.background = new THREE.Color(0x444158);
-const texts = [];
 const canvas = document.querySelector('#threeCanvas1');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x444158);
+
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 const renderer = new THREE.WebGLRenderer({canvas, antialias: true});
+const texts = [];
 // renderer.setSize(window.innerWidth, window.innerHeight);
 // let effect = new OutlineEffect(renderer);
 
-
 //OrbitControls 적용
-
-
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 // controls.autoRotate = true;
 controls.autoRotateSpeed = 2;
@@ -45,13 +43,13 @@ controls.update();
 //큐브 추가
 const geometry = new THREE.BoxGeometry(2,3,2);
 
-let cubes = {};
+let geomteries = {};
 
 //threex로 이벤트 추가 
 var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
 
 function onDocumentMouseDown(event) {
-    let picked = Object.values(cubes).indexOf(event.target);
+    let picked = Object.values(geomteries).indexOf(event.target);
 
     if (model.boxnumber == picked) {
         // event.target.material.color.b = 0;
@@ -63,7 +61,7 @@ function onDocumentMouseDown(event) {
         if (model.boxnumber != null) {
             model.startPoint = model.boxnumber;
             model.endPoint = picked;
-            // cubes["cube" + model.boxnumber].material.color.b = 0;
+            // geomteries["cube" + model.boxnumber].material.color.b = 0;
         }
         model.boxnumber = picked
         // event.target.material.color.b = 1;
@@ -85,8 +83,8 @@ function addLine(startPoint, endPoint) {
         lines[startPoint + "," + endPoint].material.color.b -= 0.1
         lines[startPoint + "," + endPoint].material.color.g -= 0.1
     } else {
-        let startCubePosition = cubes["cube" + startPoint].position;
-        let endCubePosition = cubes["cube" + endPoint].position;
+        let startCubePosition = geomteries["cube" + startPoint].position;
+        let endCubePosition = geomteries["cube" + endPoint].position;
     
         let route = [-startCubePosition.x + endCubePosition.x,-startCubePosition.y + endCubePosition.y,-startCubePosition.z + endCubePosition.z]
     
@@ -139,15 +137,11 @@ function shoot(startPoint, endPoint) {
     const sphereMaterial = new THREE.MeshToonMaterial({ color: 0xffff00 });
     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 
-    sphere.position.x = cubes["cube" + startPoint].position.x;
-    sphere.position.y = cubes["cube" + startPoint].position.y;
-    sphere.position.z = cubes["cube" + startPoint].position.z;
+    sphere.position.x = geomteries["cube" + startPoint].position.x;
+    sphere.position.y = geomteries["cube" + startPoint].position.y;
+    sphere.position.z = geomteries["cube" + startPoint].position.z;
 
     scene.add(sphere);
-
-    cubes["cube" + startPoint].position.x - cubes["cube" + endPoint].position.x;
-    cubes["cube" + startPoint].position.y - cubes["cube" + endPoint].position.y;
-    cubes["cube" + startPoint].position.z - cubes["cube" + endPoint].position.z;
 
     startMove = function () {
         let tempNumber = 0;
@@ -157,9 +151,9 @@ function shoot(startPoint, endPoint) {
                 stopMove(playAlert);
                 scene.remove(sphere)
             }
-            sphere.position.x -= (cubes["cube" + startPoint].position.x - cubes["cube" + endPoint].position.x) / maxNumber
-            sphere.position.y -= (cubes["cube" + startPoint].position.y - cubes["cube" + endPoint].position.y) / maxNumber
-            sphere.position.z -= (cubes["cube" + startPoint].position.z - cubes["cube" + endPoint].position.z) / maxNumber
+            sphere.position.x -= (geomteries["cube" + startPoint].position.x - geomteries["cube" + endPoint].position.x) / maxNumber
+            sphere.position.y -= (geomteries["cube" + startPoint].position.y - geomteries["cube" + endPoint].position.y) / maxNumber
+            sphere.position.z -= (geomteries["cube" + startPoint].position.z - geomteries["cube" + endPoint].position.z) / maxNumber
             tempNumber++
         }, 25);
     };
@@ -169,32 +163,6 @@ function shoot(startPoint, endPoint) {
     };
 
     startMove()
-}
-
-
-
-
-//큐브 추가
-function cubeAdd(point, msg) {
-    i++;
-    let material = new THREE.MeshBasicMaterial({ 
-        color: 0x00ff00, 
-        opacity: 0.8, 
-        transparent: true, 
-        side: THREE.DoubleSide, 
-        wireframe: false 
-    });
-
-    cubes["cube" + i] = new THREE.Mesh(geometry, material);
-
-    cubes["cube" + i].position.x = parseInt(point[0]);
-    cubes["cube" + i].position.y = parseInt(point[1]);
-    cubes["cube" + i].position.z = parseInt(point[2]);
-
-    addWord(msg, cubes["cube" + i].position, i);
-    scene.add(cubes["cube" + i]);
-
-    domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
 }
 
 //실린더 추가
@@ -210,16 +178,16 @@ function cylAdd(point, msg) {
 
     let cylGeometry = new THREE.CylinderGeometry(2,2,3);
 
-    cubes["cube" + i] = new THREE.Mesh(cylGeometry, material);
+    geomteries["cube" + i] = new THREE.Mesh(cylGeometry, material);
 
-    cubes["cube" + i].position.x = parseInt(point[0]);
-    cubes["cube" + i].position.y = parseInt(point[1]);
-    cubes["cube" + i].position.z = parseInt(point[2]);
+    geomteries["cube" + i].position.x = parseInt(point[0]);
+    geomteries["cube" + i].position.y = parseInt(point[1]);
+    geomteries["cube" + i].position.z = parseInt(point[2]);
 
-    addWord(msg, cubes["cube" + i].position, i);
-    scene.add(cubes["cube" + i]);
+    addWord(msg, geomteries["cube" + i].position, i);
+    scene.add(geomteries["cube" + i]);
 
-    domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
+    domEvents.addEventListener(geomteries["cube" + i], 'mousedown', onDocumentMouseDown, false);
 }
 
 

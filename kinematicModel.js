@@ -1,4 +1,4 @@
-function machine(point,msg) {
+function addMachine(point,msg) {
     
     let dae;
     let kinematics;
@@ -20,17 +20,17 @@ function machine(point,msg) {
         dae.updateMatrix();
         kinematics = collada.kinematics;
 
-        cubes["cube" + i] = dae;
+        geomteries["cube" + i] = dae;
 
-        addWord(msg, cubes["cube" + i].position, i);
+        addWord(msg, geomteries["cube" + i].position, i);
 
-        cubes["cube" + i].position.x = parseInt(point[0]);
-        cubes["cube" + i].position.y = parseInt(point[1]);
-        cubes["cube" + i].position.z = parseInt(point[2]);
+        geomteries["cube" + i].position.x = parseInt(point[0]);
+        geomteries["cube" + i].position.y = parseInt(point[1]);
+        geomteries["cube" + i].position.z = parseInt(point[2]);
 
-        scene.add(cubes["cube" + i]);
+        scene.add(geomteries["cube" + i]);
 
-        domEvents.addEventListener(cubes["cube" + i], 'mousedown', onDocumentMouseDown, false);
+        domEvents.addEventListener(geomteries["cube" + i], 'mousedown', onDocumentMouseDown, false);
         setupTween();
     });
 

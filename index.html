@@ -99,7 +99,7 @@
                         aria-describedby="basic-addon1" v-model:value="label">
                 </div>
                 <button type="button" class="btn btn-secondary btn-md"
-                    onclick="cubeAdd([model.x, model.y, model.z])">Add Box Type</button>
+                    onclick="addMachine([model.x, model.y, model.z])">Add Machine Type</button>
                 <button type="button" class="btn btn-secondary btn-md" onclick="cylAdd([model.x, model.y, model.z])">Add
                     Cylinder Type</button>
             </div>
@@ -254,7 +254,7 @@
         // test용
         // cubeAdd([5, 10, 0], "Machine 1");
 
-        machine([5, 10, 0], "Machine 1");
+        addMachine([5, 10, 0], "Machine 1");
 
         cylAdd([30, 0, 5], "DB 1");
         cylAdd([10, 0, 10], "DB 2");
@@ -262,9 +262,9 @@
         // cubeAdd([30, 10, 15], "Machine 2");
         // cubeAdd([20, 10, 30], "Machine 3");
         // cubeAdd([20, 10, 40], "Machine 4");
-        machine([30, 10, 15], "Machine 2");
-        machine([20, 0, 30], "Machine 3");
-        machine([20, 10, 50], "Machine 4");
+        addMachine([30, 10, 15], "Machine 2");
+        addMachine([20, 0, 30], "Machine 3");
+        addMachine([20, 10, 50], "Machine 4");
 
         setInterval(() => {
             if (model.toggled == "true") {

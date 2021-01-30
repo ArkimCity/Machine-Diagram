@@ -1,11 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
+
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8">
+    <title>카카오 상품 페이지</title>
+    <link rel="stylesheet" href="./styles/style.css">
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <h1>카카오 인형가게</h1>
+      </header>
+      <div class="app-wrapper">
+        <div class="product-image">
+          <img src="./images/sample.jpg" alt="product image">
+        </div>
+        <div class="product-info">
+          <h2>카카오 프렌즈 인형</h1>
+          <div>
+            <span class="price-text">10,000</span> 원~
+          </div>
+          <h3>상품 옵션</h2>
+          <div class="options">
+            <select id="options" style="width:80%;">
+            </select>
+            <select id="innerOptions" style="width:80%;">
+            </select>
+          </div>
+          <h3>선택된 상품</h2>
+          <div class="selected-options">
+            옵션을 선택해주세요.
+          </div>
+          <h3>총 가격</h2>
+          <div class="total-price">
+            <span class="total-price"></span>
+          </div>
+          <button class="order-button">주문하기</button>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script src="scripts/index.js"></script>
 </html>
+
