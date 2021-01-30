@@ -252,25 +252,7 @@
         })
     </script>
     <script>
-        // test용
-        // cubeAdd([5, 10, 0], "Machine 1");
-
-        // async function init() {
-        //     addGeos().then(()=>{
-        //         for (let j = 3; j<7; j++) {
-        //             setInterval(() => {
-        //                 if (model.toggled == "true") {
-        //                     shoot(j, parseInt(Math.random() * 3))
-        //                 } else {
-        //                     addLine(j, parseInt(Math.random() * 3))
-        //                 }
-        //             }, geomteries["cube" + j].timeDuration);
-        //         }
-        //     }
-        //     );
-        // }
-        
-        async function addGeos() {
+        function init() {
             cylAdd([30, 0, 5], "DB 1");
             cylAdd([10, 0, 10], "DB 2");
             cylAdd([20, 10, 0], "DB 3");
@@ -281,7 +263,7 @@
             addMachine([20, 10, 50], "Machine 4");
         }
 
-        addGeos();
+        init();
 
         setInterval(() => {
             removeLine();
