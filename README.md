@@ -1,3 +1,3 @@
-# three.js_practice
+# Actual Running page
 
 https://arkimcity.github.io/three.js_practice/
