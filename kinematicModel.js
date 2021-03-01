@@ -6,7 +6,7 @@ function addMachine(point,msg) {
 
     const loader = new THREE.ColladaLoader();
     // loader.load( './models/collada/kawada-hironx.dae', function ( collada ) {
-    loader.load('./models/collada/abb_irb52_7_120.dae', function (collada) {
+    loader.load('https://github.com/ArkimCity/Machine-Diagram/blob/9e1ec031fbd4c3b1ae6656772e5d538d3e5e6721/models/collada/abb_irb52_7_120.dae', function (collada) {
         i++;
         dae = collada.scene;
         dae.traverse(function (child) {
